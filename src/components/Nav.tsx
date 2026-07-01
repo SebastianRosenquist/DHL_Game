@@ -64,9 +64,9 @@ export default function Nav() {
         >
           <span className="text-xl">🏃‍♀️</span>
           <span className="font-pixel text-[11px] uppercase leading-tight sm:text-xs">
-            Team Run
+            Den Hurtigste Løber (DHL)
             <br className="hidden sm:inline" />
-            <span className="sm:ml-1">Challenge</span>
+            <span className="sm:ml-1">Thursday Challenge</span>
           </span>
         </Link>
 

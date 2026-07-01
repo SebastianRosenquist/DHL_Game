@@ -42,10 +42,10 @@ export default function DashboardPage() {
         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
             <div className="font-pixel text-[10px] uppercase tracking-widest text-dhlRed">
-              ★ Player 1 — Level 1 ★
+              ★ Thursdays ★
             </div>
             <h1 className="mt-1 text-3xl font-extrabold tracking-tight">
-              The Big Team Run 🏁
+              DHL Team Challenge 🏁
             </h1>
             <p className="text-gray-500">
               Log your runs, push your team across the map, and grab the prizes.

@@ -20,22 +20,22 @@ type Step = {
 const STEPS: Step[] = [
   {
     sprite: "seb",
-    text: "Welcome to the Team Run Challenge! 👋 I'll show you around in just a few clicks.",
-  },
-  {
-    sprite: "clea",
-    targetId: "race-section",
-    text: "This is the race. Every team's mascot moves as your runners log distance. Reach the goals to grab route prizes!",
-  },
-  {
-    sprite: "filip",
-    targetId: "route-prizes",
-    text: "Route prizes are unlocked when your team's TOTAL distance crosses each checkpoint. Every team can earn all of them — no fighting.",
+    text: "Welcome to the Team Run Challenge! 👋 Lets show you around in just a few clicks.",
   },
   {
     sprite: "robert",
     targetId: "nav-log",
     text: "Log your runs manually, or drop in a GPX / TCX / CSV file (Strava, Garmin — whatever). Duplicates are auto-skipped.",
+  },
+  {
+    sprite: "clea",
+    targetId: "race-section",
+    text: "This is the race. Every team's mascot moves as your team runners log distance. Reach the goals to grab route prizes!",
+  },
+  {
+    sprite: "filip",
+    targetId: "route-prizes",
+    text: "Route prizes are unlocked when your team's TOTAL distance crosses each checkpoint. Every team can earn all of them — no fighting.",
   },
   {
     sprite: "seb",

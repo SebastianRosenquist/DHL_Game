@@ -4,7 +4,7 @@ import cleaCheerImg from "@/media/CleaCheer.png";
 import filipImg from "@/media/FilipVG.png";
 import filipCheerImg from "@/media/FilipCheer.png";
 import robertImg from "@/media/RobertVG.png";
-import robertCheerImg from "@/media/RobertCheer.png";
+import robertCheerImg from "@/media/RobertCheer_Cropped.png";
 import sebImg from "@/media/SebVG.png";
 import sebCheerImg from "@/media/SebCheer.png";
 

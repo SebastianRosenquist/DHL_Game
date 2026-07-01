@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { type Milestone, hasReached } from "@/lib/milestones";
 import { SPRITE_KEYS, SPRITES } from "@/lib/sprites";
 import type { TeamStanding } from "@/lib/types";
-import standImg from "@/media/ThursdayCheerStand.png";
+import standImg from "@/media/ThursdayCheerStand_Cropped.PNG";
 
 // Bilingual EN/DA chant pool — the crowd shouts one of these at random intervals.
 const CHANTS = [
@@ -15,7 +15,6 @@ const CHANTS = [
   "YEAH!",
   "AFSTED!",
   "PUSH!",
-  "MERE!",
   "LET'S GO!",
   "FASTER!",
   "HOLD FAST!",
@@ -30,7 +29,7 @@ const CHANTS = [
 // Shouted on milestone crossings (louder / yellow variant).
 const MILESTONE_CHANTS = [
   "LEVEL UP!",
-  "SIKKE ET MÅL!",
+  "SIKKE EN FART!",
   "SUPER!",
   "PRIZE UNLOCKED!",
   "MILEPÆL!",
@@ -38,7 +37,7 @@ const MILESTONE_CHANTS = [
 
 // How long each type of cheer holds the arms-up sprite pose (ms).
 const CHEER_MS = {
-  random: 380,
+  random: 500,
   wave: 450,
   reactive: 850,
   milestone: 1800,
@@ -52,12 +51,12 @@ const WAVE_INTERVAL: [number, number] = [11000, 15000]; // group
 // a horizontal percentage of the container (character is centered on it), and
 // STAND_BOTTOM lifts their feet up onto the front-row surface.
 const STAND_POSITIONS: { left: string; bottom: string }[] = [
-  { left: "22%", bottom: "8%"  },  // front row left
-  { left: "65%", bottom: "8%"  },  // front row right
-  { left: "40%", bottom: "22%" },  // middle row center
-  { left: "75%", bottom: "34%" },  // back row right
+  { left: "20%", bottom: "16%" },  // front row left
+  { left: "56%", bottom: "16%" },  // front row right
+  { left: "38%", bottom: "27%" },  // middle row center
+  { left: "73%", bottom: "33%" },  // back row right
 ];
-const CHARACTER_WIDTH_PCT = "18%";
+const CHARACTER_WIDTH_PCT = "24%";
 
 type Chant = {
   id: number;
@@ -273,14 +272,13 @@ export default function Cheerleaders({
       {/* The stand backdrop sets the aspect ratio; characters position over it. */}
       <div
         className="relative mx-auto w-full max-w-2xl overflow-hidden"
-        style={{ aspectRatio: "1/1" }}
+        style={{ aspectRatio: "5/4" }}
       >
         <Image
           src={standImg}
           alt="Thursday cheering stand"
           fill
-          className="pixelated object-cover"
-          style={{ objectPosition: "center 18%" }}
+          className="pixelated object-contain object-top"
           priority
           sizes="(max-width: 672px) 100vw, 672px"
         />
