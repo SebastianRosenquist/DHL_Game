@@ -1,0 +1,12 @@
+node_modules
+.next
+data
+.git
+.env
+.env*.local
+*.db
+*.db-wal
+*.db-shm
+npm-debug.log*
+.claude
+README.md

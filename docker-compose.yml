@@ -1,0 +1,22 @@
+services:
+  running-dashboard:
+    build: .
+    image: running-dashboard:latest
+    container_name: running-dashboard
+    ports:
+      # host:container — change 8080 if it clashes with your NAS UI.
+      - "8080:3000"
+    volumes:
+      # Persists the SQLite DB + uploaded files across restarts.
+      # On a Synology/QNAP NAS, swap for a bind mount, e.g.:
+      #   - /volume1/docker/running/data:/data
+      - running_data:/data
+    environment:
+      DATABASE_URL: "file:/data/db/app.db"
+      UPLOAD_DIR: "/data/uploads"
+      ADMIN_PASSCODE: "${ADMIN_PASSCODE:-change-me}"
+      SESSION_SECRET: "${SESSION_SECRET:-change-me-to-a-long-random-string}"
+    restart: unless-stopped
+
+volumes:
+  running_data:
