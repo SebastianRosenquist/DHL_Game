@@ -16,3 +16,44 @@ body {
   background: #fafafa;
   color: var(--foreground);
 }
+
+@layer utilities {
+  /* Keep pixel-art sprites crisp when scaled instead of blurring them. */
+  .pixelated {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+  }
+
+  /* 16×16 pixel-grass tile — a base green with a few darker & lighter tufts. */
+  .bg-pixel-grass {
+    background-color: #86e08a;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'><rect width='16' height='16' fill='%2386e08a'/><rect x='2' y='3' width='1' height='2' fill='%234fb256'/><rect x='6' y='11' width='1' height='2' fill='%234fb256'/><rect x='10' y='5' width='1' height='2' fill='%234fb256'/><rect x='13' y='9' width='1' height='2' fill='%234fb256'/><rect x='4' y='7' width='1' height='1' fill='%23c8f2be'/><rect x='12' y='13' width='1' height='1' fill='%23c8f2be'/></svg>");
+    background-size: 24px 24px;
+    background-repeat: repeat;
+    image-rendering: pixelated;
+  }
+
+  /* Retro sky with drifting pixel clouds (used for the strip above lanes). */
+  .bg-pixel-sky {
+    background-color: #b4e5f5;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='96' height='24' shape-rendering='crispEdges'><rect width='96' height='24' fill='%23b4e5f5'/><rect x='10' y='8' width='6' height='2' fill='white'/><rect x='8' y='10' width='10' height='2' fill='white'/><rect x='12' y='12' width='6' height='2' fill='white'/><rect x='60' y='14' width='8' height='2' fill='white'/><rect x='58' y='16' width='12' height='2' fill='white'/></svg>");
+    background-size: 96px 24px;
+    background-repeat: repeat-x;
+    image-rendering: pixelated;
+  }
+
+  /* Retro "press-in" effect for primary buttons. */
+  .btn-pixel {
+    box-shadow: 4px 4px 0 0 #1a1a1a;
+    transition: transform 60ms ease-out, box-shadow 60ms ease-out;
+  }
+  .btn-pixel:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 3px 3px 0 0 #1a1a1a;
+  }
+  .btn-pixel:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 0 #1a1a1a;
+  }
+}
