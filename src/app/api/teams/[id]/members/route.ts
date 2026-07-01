@@ -6,8 +6,9 @@ export const dynamic = "force-dynamic";
 /** Public: per-member stats for a single team. */
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
   const members = sqlite
     .prepare(
       `SELECT u.id, u.name,
@@ -23,7 +24,7 @@ export async function GET(
        GROUP BY u.id
        ORDER BY totalM DESC`,
     )
-    .all(params.id);
+    .all(id);
 
   return NextResponse.json({ members });
 }
