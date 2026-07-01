@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import useSWR, { mutate } from "swr";
 import Nav from "@/components/Nav";
 import { characterEmoji } from "@/lib/characters";
 import { fetcher } from "@/lib/fetcher";
+import { SPRITES, SPRITE_KEYS, type SpriteKey } from "@/lib/sprites";
 
 type Team = { id: string; name: string; character: string; colorHex: string };
 
@@ -17,6 +20,11 @@ export default function JoinPage() {
   const [needsTeam, setNeedsTeam] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // Pick a random greeter *after* mount so SSR and client agree (no hydration mismatch).
+  const [greeter, setGreeter] = useState<SpriteKey | null>(null);
+  useEffect(() => {
+    setGreeter(SPRITE_KEYS[Math.floor(Math.random() * SPRITE_KEYS.length)]);
+  }, []);
 
   const teams = data?.teams ?? [];
 
@@ -55,12 +63,51 @@ export default function JoinPage() {
     <>
       <Nav />
       <main className="mx-auto max-w-3xl px-4 py-8">
-        <h1 className="text-2xl font-extrabold">Log in or join</h1>
-        <p className="mt-1 text-gray-500">
+        {/* Retro welcome banner — one of the 4 sprites waves you in. */}
+        {greeter && (
+          <div className="mb-6 flex items-end gap-4 rounded-lg border-[3px] border-ink bg-white p-4 shadow-pixel">
+            <motion.div
+              animate={{ y: [0, -6, 0] }}
+              transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
+              className="flex-shrink-0"
+            >
+              <Image
+                src={SPRITES[greeter].src}
+                alt={SPRITES[greeter].name}
+                width={72}
+                height={112}
+                className="pixelated h-24 w-auto object-contain drop-shadow-md"
+                priority
+              />
+            </motion.div>
+            <div className="min-w-0 flex-1 pb-2">
+              <div className="font-pixel text-[10px] uppercase tracking-widest text-dhlRed">
+                <motion.span
+                  animate={{ opacity: [1, 0.2, 1] }}
+                  transition={{ repeat: Infinity, duration: 1 }}
+                >
+                  ▶
+                </motion.span>{" "}
+                Press Start
+              </div>
+              <div className="mt-1 font-pixel text-xs uppercase leading-tight text-ink">
+                Hey, I&apos;m {SPRITES[greeter].name}!
+              </div>
+              <div className="mt-1 text-sm text-gray-600">
+                Type your name to sign in — or start a new account by picking a team.
+              </div>
+            </div>
+          </div>
+        )}
+
+        <h1 className="font-pixel text-lg text-ink">LOG IN OR JOIN</h1>
+        <p className="mt-2 text-gray-500">
           Enter your name to log in. New here? Pick a team and we&apos;ll set you up.
         </p>
 
-        <label className="mt-6 block text-sm font-medium">Your name</label>
+        <label className="mt-6 block font-pixel text-[10px] uppercase text-ink">
+          Your name
+        </label>
         <input
           value={name}
           onChange={(e) => {
@@ -68,14 +115,14 @@ export default function JoinPage() {
             setNeedsTeam(false);
           }}
           placeholder="e.g. Alex"
-          className="mt-1 w-full rounded-xl border border-gray-300 px-4 py-2.5 outline-none focus:border-ink"
+          className="mt-1 w-full rounded-md border-[3px] border-ink px-4 py-2.5 outline-none focus:shadow-pixelSm"
           maxLength={40}
           onKeyDown={(e) => e.key === "Enter" && submit()}
         />
 
-        <h2 className="mt-6 text-sm font-medium">
+        <h2 className="mt-6 font-pixel text-[10px] uppercase text-ink">
           Choose your team{" "}
-          <span className="font-normal text-gray-400">
+          <span className="font-sans text-xs font-normal normal-case text-gray-400">
             (only needed the first time)
           </span>
         </h2>
@@ -85,7 +132,7 @@ export default function JoinPage() {
           </p>
         ) : (
           <div
-            className={`mt-2 grid grid-cols-2 gap-3 rounded-2xl sm:grid-cols-3 ${
+            className={`mt-2 grid grid-cols-2 gap-3 rounded-md sm:grid-cols-3 ${
               needsTeam ? "ring-2 ring-dhlRed ring-offset-4" : ""
             }`}
           >
@@ -96,8 +143,10 @@ export default function JoinPage() {
                   key={t.id}
                   type="button"
                   onClick={() => setTeamId(t.id)}
-                  className={`flex flex-col items-center gap-1 rounded-2xl border-2 p-4 transition ${
-                    selected ? "shadow-md" : "border-gray-200 hover:border-gray-300"
+                  className={`flex flex-col items-center gap-1 rounded-md border-[3px] p-4 transition ${
+                    selected
+                      ? "shadow-pixel"
+                      : "border-gray-200 hover:border-gray-300"
                   }`}
                   style={selected ? { borderColor: t.colorHex } : undefined}
                 >
@@ -119,7 +168,7 @@ export default function JoinPage() {
         <button
           onClick={submit}
           disabled={busy}
-          className="mt-6 rounded-xl bg-ink px-6 py-2.5 font-semibold text-white disabled:opacity-50"
+          className="mt-6 rounded-md border-[3px] border-ink bg-ink px-6 py-2.5 font-pixel text-xs uppercase text-white shadow-pixel disabled:opacity-50 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-pixelSm"
         >
           {busy ? "Please wait…" : "Log in / Join"}
         </button>

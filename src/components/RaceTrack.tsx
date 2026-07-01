@@ -27,8 +27,8 @@ export default function RaceTrack({
 
   if (teams.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-gray-300 bg-white/60 p-10 text-center text-gray-500">
-        No teams yet. Ask the admin to create some teams to start the race! 🏁
+      <div className="rounded-md border-[3px] border-dashed border-gray-300 bg-white/60 p-10 text-center font-pixel text-[10px] text-gray-500 shadow-pixelSm">
+        NO TEAMS YET — ASK THE ADMIN TO CREATE SOME 🏁
       </div>
     );
   }
@@ -37,19 +37,19 @@ export default function RaceTrack({
     <div className="space-y-3">
       {/* milestone ruler */}
       <div className="grid grid-cols-[130px_1fr] gap-3 sm:grid-cols-[180px_1fr]">
-        <div className="text-xs font-medium text-gray-400 self-end">
+        <div className="self-end font-pixel text-[9px] uppercase tracking-wider text-gray-400">
           Route prizes →
         </div>
-        <div className="relative h-9">
+        <div className="relative h-9 rounded-md bg-pixel-sky border-[3px] border-ink shadow-pixelSm">
           {ordered.map((m) => (
             <div
               key={m.id ?? m.km}
               className="absolute flex -translate-x-1/2 flex-col items-center"
-              style={{ left: `${milestonePct(m.km)}%` }}
+              style={{ left: `${milestonePct(m.km)}%`, top: 2 }}
               title={`${m.label} — ${m.km} km`}
             >
-              <span className="text-base leading-none">{m.icon}</span>
-              <span className="text-[10px] font-medium text-gray-400">
+              <span className="text-base leading-none drop-shadow">{m.icon}</span>
+              <span className="font-pixel text-[8px] font-medium text-ink/70">
                 {m.km}k
               </span>
             </div>
@@ -86,15 +86,9 @@ export default function RaceTrack({
               </div>
             </div>
 
-            <div
-              className="relative h-[72px] overflow-hidden rounded-2xl border border-emerald-200 shadow-inner"
-              style={{
-                background:
-                  "linear-gradient(180deg,#e9fbef 0%,#c9f3d6 55%,#b6ecc6 100%)",
-              }}
-            >
+            <div className="pixelated relative h-[76px] overflow-hidden rounded-md border-[3px] border-ink bg-pixel-grass shadow-pixel">
               {/* dashed running path */}
-              <div className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 border-t-[3px] border-dashed border-white/70" />
+              <div className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 border-t-[3px] border-dashed border-white/80" />
 
               {/* milestone gates: solid (in team color) once reached, faint ahead */}
               {ordered.map((m) => {
@@ -102,16 +96,15 @@ export default function RaceTrack({
                 return (
                   <div
                     key={m.id ?? m.km}
-                    className="absolute bottom-0 top-0 w-px -translate-x-1/2"
+                    className="absolute bottom-0 top-0 w-[2px] -translate-x-1/2"
                     style={{
                       left: `${milestonePct(m.km)}%`,
-                      background: reached ? t.colorHex : "rgba(255,255,255,0.85)",
-                      opacity: reached ? 0.9 : 1,
+                      background: reached ? t.colorHex : "rgba(26,26,26,0.35)",
                     }}
                   >
                     <span
-                      className={`absolute top-1 left-1/2 -translate-x-1/2 text-xs ${
-                        reached ? "" : "opacity-25 grayscale"
+                      className={`absolute top-1 left-1/2 -translate-x-1/2 text-sm drop-shadow ${
+                        reached ? "" : "opacity-30 grayscale"
                       }`}
                     >
                       {m.icon}

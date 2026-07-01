@@ -3,10 +3,12 @@
 import { useState } from "react";
 import useSWR from "swr";
 import AchievementBadges from "@/components/AchievementBadges";
+import Cheerleaders from "@/components/Cheerleaders";
 import Nav from "@/components/Nav";
 import RaceTrack from "@/components/RaceTrack";
 import RoutePrizes from "@/components/RoutePrizes";
 import SegmentRace from "@/components/SegmentRace";
+import Tutorial from "@/components/Tutorial";
 import { fetcher } from "@/lib/fetcher";
 import { formatDistance } from "@/lib/format";
 import type { Standings } from "@/lib/types";
@@ -15,9 +17,13 @@ type RaceView = "next" | "full";
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl bg-white px-5 py-4 shadow-sm">
-      <div className="text-2xl font-extrabold tabular-nums">{value}</div>
-      <div className="text-xs uppercase tracking-wide text-gray-500">{label}</div>
+    <div className="rounded-md border-[3px] border-ink bg-white px-4 py-3 shadow-pixel">
+      <div className="font-pixel text-lg tabular-nums leading-tight text-ink">
+        {value}
+      </div>
+      <div className="mt-1 font-pixel text-[8px] uppercase tracking-widest text-gray-500">
+        {label}
+      </div>
     </div>
   );
 }
@@ -35,7 +41,10 @@ export default function DashboardPage() {
       <main className="mx-auto max-w-6xl px-4 py-6">
         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight">
+            <div className="font-pixel text-[10px] uppercase tracking-widest text-dhlRed">
+              ★ Player 1 — Level 1 ★
+            </div>
+            <h1 className="mt-1 text-3xl font-extrabold tracking-tight">
               The Big Team Run 🏁
             </h1>
             <p className="text-gray-500">
@@ -55,40 +64,45 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <section className="mb-8 rounded-3xl bg-white/70 p-4 shadow-sm sm:p-6">
+        <section
+          id="race-section"
+          className="mb-8 rounded-lg border-[3px] border-ink bg-white/80 p-4 shadow-pixel sm:p-6"
+        >
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-            <h2 className="text-lg font-bold">🏆 The Race</h2>
+            <h2 className="font-pixel text-sm text-ink">🏆 THE RACE</h2>
             <div className="flex items-center gap-2">
-              <div className="inline-flex rounded-full bg-gray-100 p-1 text-sm">
+              <div className="inline-flex rounded-md border-2 border-ink bg-white p-1 text-sm shadow-pixelSm">
                 <button
                   onClick={() => setView("next")}
-                  className={`rounded-full px-3 py-1 font-medium transition ${
-                    view === "next" ? "bg-white shadow text-ink" : "text-gray-500"
+                  className={`rounded px-3 py-1 font-pixel text-[9px] uppercase tracking-wide transition ${
+                    view === "next" ? "bg-ink text-white" : "text-gray-500"
                   }`}
                 >
-                  Race to next prize
+                  Next Prize
                 </button>
                 <button
                   onClick={() => setView("full")}
-                  className={`rounded-full px-3 py-1 font-medium transition ${
-                    view === "full" ? "bg-white shadow text-ink" : "text-gray-500"
+                  className={`rounded px-3 py-1 font-pixel text-[9px] uppercase tracking-wide transition ${
+                    view === "full" ? "bg-ink text-white" : "text-gray-500"
                   }`}
                 >
-                  Full route
+                  Full Route
                 </button>
               </div>
-              <span className="hidden text-xs text-gray-400 sm:inline">
-                Updates live
+              <span className="hidden font-pixel text-[8px] uppercase text-gray-400 sm:inline">
+                Live
               </span>
             </div>
           </div>
           <p className="mb-4 text-sm text-gray-500">
             {view === "next"
               ? "Each team races to their next checkpoint — reach it and the goal jumps to the next prize."
-              : "Everyone on the same 100 km line — see how the teams stack up overall."}
+              : "Everyone on the same route — see how the teams stack up overall."}
           </p>
           {isLoading && !data ? (
-            <div className="py-10 text-center text-gray-400">Loading the race…</div>
+            <div className="py-10 text-center font-pixel text-[10px] text-gray-400">
+              LOADING THE RACE…
+            </div>
           ) : view === "next" ? (
             <SegmentRace
               teams={data?.teams ?? []}
@@ -100,13 +114,18 @@ export default function DashboardPage() {
               milestones={data?.milestones ?? []}
             />
           )}
+
+          <Cheerleaders
+            teams={data?.teams ?? []}
+            milestones={data?.milestones ?? []}
+          />
         </section>
 
-        <section className="mb-8">
-          <h2 className="mb-1 text-lg font-bold">🎁 Route Prizes</h2>
+        <section id="route-prizes" className="mb-8">
+          <h2 className="mb-1 font-pixel text-sm text-ink">🎁 ROUTE PRIZES</h2>
           <p className="mb-4 text-sm text-gray-500">
             Every team unlocks these by reaching the distance checkpoints along the
-            100 km route.
+            route.
           </p>
           <RoutePrizes
             teams={data?.teams ?? []}
@@ -114,14 +133,18 @@ export default function DashboardPage() {
           />
         </section>
 
-        <section>
-          <h2 className="mb-1 text-lg font-bold">🎖️ Prizes &amp; Achievements</h2>
+        <section id="achievements">
+          <h2 className="mb-1 font-pixel text-sm text-ink">
+            🎖️ PRIZES &amp; ACHIEVEMENTS
+          </h2>
           <p className="mb-4 text-sm text-gray-500">
             Competitive records — one current holder each.
           </p>
           <AchievementBadges achievements={data?.achievements ?? []} />
         </section>
       </main>
+
+      <Tutorial />
     </>
   );
 }

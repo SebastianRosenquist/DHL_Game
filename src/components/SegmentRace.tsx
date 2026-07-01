@@ -18,8 +18,8 @@ export default function SegmentRace({
 }) {
   if (teams.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-gray-300 bg-white/60 p-10 text-center text-gray-500">
-        No teams yet. Ask the admin to create some teams to start the race! 🏁
+      <div className="rounded-md border-[3px] border-dashed border-gray-300 bg-white/60 p-10 text-center font-pixel text-[10px] text-gray-500 shadow-pixelSm">
+        NO TEAMS YET — ASK THE ADMIN TO CREATE SOME 🏁
       </div>
     );
   }
@@ -62,28 +62,22 @@ export default function SegmentRace({
               </div>
             </div>
 
-            <div
-              className="relative h-[72px] overflow-hidden rounded-2xl border border-emerald-200 shadow-inner"
-              style={{
-                background:
-                  "linear-gradient(180deg,#e9fbef 0%,#c9f3d6 55%,#b6ecc6 100%)",
-              }}
-            >
+            <div className="pixelated relative h-[76px] overflow-hidden rounded-md border-[3px] border-ink bg-pixel-grass shadow-pixel">
               {/* progress fill in team color */}
               <motion.div
                 className="absolute inset-y-0 left-0"
                 initial={false}
                 animate={{ width: `${seg.progress * 100}%` }}
                 transition={{ type: "spring", stiffness: 55, damping: 18 }}
-                style={{ background: t.colorHex, opacity: 0.18 }}
+                style={{ background: t.colorHex, opacity: 0.22 }}
               />
 
               {/* dashed running path */}
-              <div className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 border-t-[3px] border-dashed border-white/70" />
+              <div className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 border-t-[3px] border-dashed border-white/80" />
 
               {/* leg start marker (previous milestone or START) */}
-              <div className="absolute left-2 top-1.5 text-[10px] font-medium text-gray-500">
-                {seg.fromM === 0 ? "START" : `${seg.fromM / 1000}k`}
+              <div className="absolute left-2 top-1 font-pixel text-[8px] font-medium text-ink/70">
+                {seg.fromM === 0 ? "START" : `${seg.fromM / 1000}K`}
               </div>
 
               {/* the goal flag at the right */}
@@ -99,8 +93,8 @@ export default function SegmentRace({
                     <span className="text-2xl drop-shadow">
                       {seg.target!.icon}
                     </span>
-                    <span className="text-[10px] font-semibold text-gray-500">
-                      {seg.target!.km}k
+                    <span className="font-pixel text-[8px] font-semibold text-ink/80">
+                      {seg.target!.km}K
                     </span>
                   </motion.div>
                 )}
