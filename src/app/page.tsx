@@ -4,6 +4,7 @@ import { useState } from "react";
 import useSWR from "swr";
 import AchievementBadges from "@/components/AchievementBadges";
 import Cheerleaders from "@/components/Cheerleaders";
+import Countdown from "@/components/Countdown";
 import Nav from "@/components/Nav";
 import RaceTrack from "@/components/RaceTrack";
 import RoutePrizes from "@/components/RoutePrizes";
@@ -73,6 +74,10 @@ export default function DashboardPage() {
               value={data ? String(data.totals.activities) : "—"}
             />
           </div>
+        </div>
+
+        <div className="mb-6 flex justify-center">
+          <Countdown />
         </div>
 
         <section
