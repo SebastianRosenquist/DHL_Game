@@ -108,46 +108,48 @@ export default function UserManager() {
       {error && <p className="mt-2 text-sm text-dhlRed">{error}</p>}
 
       <div className="mt-4 overflow-hidden rounded-xl border border-gray-100">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-left text-gray-500">
-            <tr>
-              <th className="px-3 py-2 font-medium">Name</th>
-              <th className="px-3 py-2 font-medium">Team</th>
-              <th className="px-3 py-2 font-medium">Runs</th>
-              <th className="px-3 py-2 font-medium">Total</th>
-              <th className="px-3 py-2" />
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((r) => (
-              <FragmentRow
-                key={r.id}
-                r={r}
-                teams={teams}
-                isEditing={editId === r.id}
-                editName={editName}
-                editTeam={editTeam}
-                onEditName={setEditName}
-                onEditTeam={setEditTeam}
-                onStartEdit={() => startEdit(r)}
-                onSave={() => saveEdit(r.id)}
-                onCancel={() => setEditId(null)}
-                onDelete={() => deleteUser(r)}
-                expanded={expandedId === r.id}
-                onToggleRuns={() => toggleRuns(r.id)}
-                runs={expandedId === r.id ? runs : []}
-                onDeleteRun={(runId) => deleteRun(runId, r.id)}
-              />
-            ))}
-            {users.length === 0 && (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[600px] text-sm">
+            <thead className="bg-gray-50 text-left text-gray-500">
               <tr>
-                <td colSpan={5} className="px-3 py-4 text-gray-500">
-                  No runners have joined yet.
-                </td>
+                <th className="px-3 py-2 font-medium">Name</th>
+                <th className="px-3 py-2 font-medium">Team</th>
+                <th className="px-3 py-2 font-medium">Runs</th>
+                <th className="px-3 py-2 font-medium">Total</th>
+                <th className="px-3 py-2" />
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {users.map((r) => (
+                <FragmentRow
+                  key={r.id}
+                  r={r}
+                  teams={teams}
+                  isEditing={editId === r.id}
+                  editName={editName}
+                  editTeam={editTeam}
+                  onEditName={setEditName}
+                  onEditTeam={setEditTeam}
+                  onStartEdit={() => startEdit(r)}
+                  onSave={() => saveEdit(r.id)}
+                  onCancel={() => setEditId(null)}
+                  onDelete={() => deleteUser(r)}
+                  expanded={expandedId === r.id}
+                  onToggleRuns={() => toggleRuns(r.id)}
+                  runs={expandedId === r.id ? runs : []}
+                  onDeleteRun={(runId) => deleteRun(runId, r.id)}
+                />
+              ))}
+              {users.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-3 py-4 text-gray-500">
+                    No runners have joined yet.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

@@ -4,12 +4,10 @@ services:
     image: running-dashboard:latest
     container_name: running-dashboard
     ports:
-      # host:container — change 8080 if it clashes with your NAS UI.
-      - "8080:3000"
+      # Only expose locally to cloudflared tunnel.
+      - "127.0.0.1:3000:3000"
     volumes:
       # Persists the SQLite DB + uploaded files across restarts.
-      # On a Synology/QNAP NAS, swap for a bind mount, e.g.:
-      #   - /volume1/docker/running/data:/data
       - running_data:/data
     environment:
       DATABASE_URL: "file:/data/db/app.db"
@@ -18,5 +16,20 @@ services:
       SESSION_SECRET: "${SESSION_SECRET:-change-me-to-a-long-random-string}"
     restart: unless-stopped
 
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared-tunnel
+    command: tunnel run
+    volumes:
+      # Mount the .cloudflared config directory from the NAS.
+      # The tunnel token will be stored here after first auth.
+      - cloudflared_config:/.cloudflared
+    environment:
+      TUNNEL_TOKEN: "${TUNNEL_TOKEN}"
+    restart: unless-stopped
+    depends_on:
+      - running-dashboard
+
 volumes:
   running_data:
+  cloudflared_config:
