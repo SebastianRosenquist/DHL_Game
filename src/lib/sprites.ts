@@ -1,12 +1,59 @@
 import type { StaticImageData } from "next/image";
-import cleaImg from "@/media/CleaVG.png";
-import cleaCheerImg from "@/media/CleaCheer.png";
-import filipImg from "@/media/FilipVG.png";
-import filipCheerImg from "@/media/FilipCheer.png";
-import robertImg from "@/media/RobertVG.png";
-import robertCheerImg from "@/media/RobertCheer_Cropped.png";
-import sebImg from "@/media/SebVG.png";
-import sebCheerImg from "@/media/SebCheer.png";
+import cleaImg from "@/media/VG/CleaVG.png";
+import cleaCheerImg from "@/media/Cheer/CleaCheer.png";
+import filipImg from "@/media/VG/FilipVG.png";
+import filipCheerImg from "@/media/Cheer/FilipCheer.png";
+import robertImg from "@/media/VG/RobertVG.png";
+import robertCheerImg from "@/media/Cheer/RobertCheer_Cropped.png";
+import sebImg from "@/media/VG/SebVG.png";
+import sebCheerImg from "@/media/Cheer/SebCheer.png";
+import kirstineImg from "@/media/VG/KirstineVG.png";
+import kirstineCheerImg from "@/media/Cheer/KirstineCheer.png";
+import kristianImg from "@/media/VG/KristianVG.png";
+import kristianCheerImg from "@/media/Cheer/KristianCheer.png";
+import lukasImg from "@/media/VG/LukasVG.png";
+import lukasCheerImg from "@/media/Cheer/LukasCheer.png";
+import madsImg from "@/media/VG/MadsVG.png";
+import madsCheerImg from "@/media/Cheer/MadsCheer.png";
+import madsLImg from "@/media/VG/MadsLVG.png";
+import madsLCheerImg from "@/media/Cheer/MadsLCheer.png";
+import olaImg from "@/media/VG/OlaVG.png";
+import olaCheerImg from "@/media/Cheer/OlaCheer.png";
+import signeImg from "@/media/VG/SigneVG.png";
+import signeCheerImg from "@/media/Cheer/SigneCheer.png";
+import steenImg from "@/media/VG/SteenVG.png";
+import steenCheerImg from "@/media/Cheer/SteenCheer.png";
+import lasseImg from "@/media/VG/LasseVG.png";
+import lasseCheerImg from "@/media/Cheer/LasseCheer.png";
+
+type SpriteEntry = {
+  name: string;
+  src: StaticImageData;
+  cheerSrc: StaticImageData;
+  /** Optional per-character zoom applied only to `cheerSrc` (defaults to 1x).
+   *  Some cheer photos are cropped much wider/squarer than the idle photos,
+   *  so `object-contain` shrinks them to fit — bump this to compensate. It
+   *  scales up from the character's feet, so their position on the stand
+   *  doesn't shift. */
+  cheerScale?: number;
+};
+
+export const SPRITE_KEYS = [
+  "seb",
+  "clea",
+  "filip",
+  "robert",
+  "kirstine",
+  "kristian",
+  "lukas",
+  "mads",
+  "madsL",
+  "ola",
+  "signe",
+  "steen",
+  "lasse",
+] as const;
+export type SpriteKey = (typeof SPRITE_KEYS)[number];
 
 /**
  * Pixel-art character portraits. Two frames per character — an idle pose (`src`)
@@ -16,7 +63,7 @@ import sebCheerImg from "@/media/SebCheer.png";
  * Used as cheerleaders on the race section and as tutorial guides. They don't
  * map to teams or specific users. Tutorial + Join still only need `src`.
  */
-export const SPRITES = {
+export const SPRITES: Record<SpriteKey, SpriteEntry> = {
   seb: {
     name: "Seb",
     src: sebImg as StaticImageData,
@@ -36,8 +83,51 @@ export const SPRITES = {
     name: "Robert",
     src: robertImg as StaticImageData,
     cheerSrc: robertCheerImg as StaticImageData,
+    cheerScale: 1.9,
   },
-} as const;
-
-export type SpriteKey = keyof typeof SPRITES;
-export const SPRITE_KEYS = Object.keys(SPRITES) as SpriteKey[];
+  kirstine: {
+    name: "Kirstine",
+    src: kirstineImg as StaticImageData,
+    cheerSrc: kirstineCheerImg as StaticImageData,
+  },
+  kristian: {
+    name: "Kristian",
+    src: kristianImg as StaticImageData,
+    cheerSrc: kristianCheerImg as StaticImageData,
+  },
+  lukas: {
+    name: "Lukas",
+    src: lukasImg as StaticImageData,
+    cheerSrc: lukasCheerImg as StaticImageData,
+  },
+  mads: {
+    name: "Mads",
+    src: madsImg as StaticImageData,
+    cheerSrc: madsCheerImg as StaticImageData,
+  },
+  madsL: {
+    name: "Mads L",
+    src: madsLImg as StaticImageData,
+    cheerSrc: madsLCheerImg as StaticImageData,
+  },
+  ola: {
+    name: "Ola",
+    src: olaImg as StaticImageData,
+    cheerSrc: olaCheerImg as StaticImageData,
+  },
+  signe: {
+    name: "Signe",
+    src: signeImg as StaticImageData,
+    cheerSrc: signeCheerImg as StaticImageData,
+  },
+  steen: {
+    name: "Steen",
+    src: steenImg as StaticImageData,
+    cheerSrc: steenCheerImg as StaticImageData,
+  },
+  lasse: {
+    name: "Lasse",
+    src: lasseImg as StaticImageData,
+    cheerSrc: lasseCheerImg as StaticImageData,
+  },
+};

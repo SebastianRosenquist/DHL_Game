@@ -294,61 +294,63 @@ export default function LogPage() {
           <h2 className="mb-3 font-bold">Your recent activities</h2>
           {acts && acts.activities.length > 0 ? (
             <div className="overflow-hidden rounded-2xl border border-gray-200">
-              <table className="w-full text-sm">
-                <thead className="bg-gray-50 text-left text-gray-500">
-                  <tr>
-                    <th className="px-4 py-2 font-medium">Date</th>
-                    <th className="px-4 py-2 font-medium">Type</th>
-                    <th className="px-4 py-2 font-medium">Distance</th>
-                    <th className="px-4 py-2 font-medium">Time</th>
-                    <th className="px-4 py-2" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {acts.activities.map((a) => (
-                    <tr key={a.id} className="border-t border-gray-100">
-                      <td className="px-4 py-2 tabular-nums">{a.localDate}</td>
-                      <td className="px-4 py-2">
-                        {ACTIVITY_TYPE_ICONS[a.activityType] ?? ""}{" "}
-                        {ACTIVITY_TYPE_LABELS[a.activityType as ActivityType] ?? a.activityType}
-                      </td>
-                      <td className="px-4 py-2 tabular-nums">
-                        {formatDistance(a.distanceM)}
-                      </td>
-                      <td className="px-4 py-2 tabular-nums">
-                        {formatDuration(a.elapsedSec)}
-                      </td>
-                      <td className="px-4 py-2 text-right">
-                        {a.source === "manual" ? (
-                          <span className="flex justify-end gap-3">
-                            <button
-                              onClick={() => startEdit(a)}
-                              className="text-gray-500 hover:text-ink"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => deleteActivity(a.id)}
-                              className="text-dhlRed hover:underline"
-                            >
-                              Delete
-                            </button>
-                          </span>
-                        ) : (
-                          <span className="flex justify-end">
-                            <button
-                              onClick={() => deleteActivity(a.id)}
-                              className="text-dhlRed hover:underline"
-                            >
-                              Delete
-                            </button>
-                          </span>
-                        )}
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[480px] text-sm">
+                  <thead className="bg-gray-50 text-left text-gray-500">
+                    <tr>
+                      <th className="px-4 py-2 font-medium">Date</th>
+                      <th className="px-4 py-2 font-medium">Type</th>
+                      <th className="px-4 py-2 font-medium">Distance</th>
+                      <th className="px-4 py-2 font-medium">Time</th>
+                      <th className="px-4 py-2" />
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {acts.activities.map((a) => (
+                      <tr key={a.id} className="border-t border-gray-100">
+                        <td className="px-4 py-2 tabular-nums">{a.localDate}</td>
+                        <td className="px-4 py-2">
+                          {ACTIVITY_TYPE_ICONS[a.activityType] ?? ""}{" "}
+                          {ACTIVITY_TYPE_LABELS[a.activityType as ActivityType] ?? a.activityType}
+                        </td>
+                        <td className="px-4 py-2 tabular-nums">
+                          {formatDistance(a.distanceM)}
+                        </td>
+                        <td className="px-4 py-2 tabular-nums">
+                          {formatDuration(a.elapsedSec)}
+                        </td>
+                        <td className="px-4 py-2 text-right">
+                          {a.source === "manual" ? (
+                            <span className="flex justify-end gap-3">
+                              <button
+                                onClick={() => startEdit(a)}
+                                className="text-gray-500 hover:text-ink"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => deleteActivity(a.id)}
+                                className="text-dhlRed hover:underline"
+                              >
+                                Delete
+                              </button>
+                            </span>
+                          ) : (
+                            <span className="flex justify-end">
+                              <button
+                                onClick={() => deleteActivity(a.id)}
+                                className="text-dhlRed hover:underline"
+                              >
+                                Delete
+                              </button>
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ) : (
             <p className="text-sm text-gray-500">No activities logged yet.</p>

@@ -73,6 +73,17 @@ export default function Tutorial() {
     return () => window.removeEventListener(TUTORIAL_OPEN_EVENT, handler);
   }, []);
 
+  // Keep the viewport size fresh while open — the mount-time capture above
+  // can go stale (e.g. rotating the phone, or resizing on a step with no
+  // target, which doesn't otherwise register a resize listener).
+  useEffect(() => {
+    if (!open) return;
+    const update = () => setViewport({ w: window.innerWidth, h: window.innerHeight });
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [open]);
+
   // Track the target element's rect for the current step.
   useEffect(() => {
     if (!open) return;
@@ -116,10 +127,15 @@ export default function Tutorial() {
   const isLast = step === STEPS.length - 1;
   const sprite = SPRITES[current.sprite];
 
+  // Shrink to fit narrow phones (with 16px margin either side) instead of
+  // overflowing the viewport at the fixed 440px width.
+  const bubbleWidth =
+    viewport.w > 0 ? Math.min(BUBBLE_WIDTH, viewport.w - 32) : BUBBLE_WIDTH;
+
   // Figure out where to anchor the character + bubble. When there's a target,
   // place it on whichever side of the target has more room; otherwise centre.
   let bubbleTop = viewport.h / 2 - BUBBLE_HEIGHT_EST / 2;
-  let bubbleLeft = viewport.w / 2 - BUBBLE_WIDTH / 2;
+  let bubbleLeft = viewport.w / 2 - bubbleWidth / 2;
   let notch: "above" | "below" | null = null;
   if (rect) {
     const spaceAbove = rect.top;
@@ -137,8 +153,8 @@ export default function Tutorial() {
     bubbleLeft = Math.max(
       16,
       Math.min(
-        viewport.w - BUBBLE_WIDTH - 16,
-        rect.left + rect.width / 2 - BUBBLE_WIDTH / 2,
+        viewport.w - bubbleWidth - 16,
+        rect.left + rect.width / 2 - bubbleWidth / 2,
       ),
     );
   }
@@ -177,7 +193,7 @@ export default function Tutorial() {
         style={{
           top: bubbleTop,
           left: bubbleLeft,
-          width: BUBBLE_WIDTH,
+          width: bubbleWidth,
         }}
       >
         <motion.div
@@ -197,11 +213,11 @@ export default function Tutorial() {
         <div className="flex-1">
           <SpeechBubble notch={notch}>
             <p className="text-sm leading-relaxed text-ink">{current.text}</p>
-            <div className="mt-3 flex items-center justify-between">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
               <span className="font-pixel text-[9px] text-gray-400">
                 {step + 1} / {STEPS.length}
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 {!isLast && (
                   <button
                     onClick={finish}
