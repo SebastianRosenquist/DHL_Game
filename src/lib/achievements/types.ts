@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ACTIVITY_TYPES } from "@/lib/activity-type";
 
 /** Computation strategies the engine knows how to run. */
 export const STRATEGIES = [
@@ -64,6 +65,7 @@ export const achievementDefInput = z
     metric: z.enum(METRIC_KEYS as [MetricKey, ...MetricKey[]]).optional(),
     scope: z.enum(SCOPES).default("individual"),
     window: z.enum(WINDOWS).default("all_time"),
+    activityType: z.enum(ACTIVITY_TYPES).default("run"),
     icon: z.string().trim().min(1).max(8).default("🏆"),
     enabled: z.boolean().default(true),
     sort: z.number().int().default(0),

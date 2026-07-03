@@ -12,7 +12,7 @@ const pressStart = Press_Start_2P({
 });
 
 export const metadata: Metadata = {
-  title: "Team Running Challenge",
+  title: "Thursday DHL Challenge",
   description: "Log your runs, race your team, win the prizes.",
 };
 

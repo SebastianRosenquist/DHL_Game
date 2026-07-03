@@ -45,6 +45,7 @@ export async function POST(req: Request) {
       params: paramsFromInput(d),
       scope: d.scope,
       window: d.window,
+      activityType: d.activityType,
       icon: d.icon,
       enabled: d.enabled,
       sort: d.sort,

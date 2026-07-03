@@ -1,12 +1,25 @@
 "use client";
 
+import type { GapInfo } from "@/lib/achievement-gaps";
 import { formatMetricValue } from "@/lib/format";
-import type { AchievementView } from "@/lib/types";
+import type { AchievementView, MetricUnit } from "@/lib/types";
+
+/** Wording for "how far behind" that reads naturally per metric unit. */
+function gapLabel(unit: MetricUnit, gap: number): string {
+  if (unit === "count") {
+    const n = Math.round(gap);
+    return `${n} fewer day${n === 1 ? "" : "s"}`;
+  }
+  const formatted = formatMetricValue(unit, gap);
+  return unit === "distance" ? `${formatted} behind` : `${formatted} slower`;
+}
 
 export default function AchievementBadges({
   achievements,
+  gaps,
 }: {
   achievements: AchievementView[];
+  gaps?: Record<string, GapInfo>;
 }) {
   if (achievements.length === 0) {
     return (
@@ -20,6 +33,7 @@ export default function AchievementBadges({
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {achievements.map((a) => {
         const held = a.value != null;
+        const gap = gaps?.[a.id];
         return (
           <div
             key={a.id}
@@ -61,6 +75,16 @@ export default function AchievementBadges({
                         <span className="text-gray-400">· {a.teamName}</span>
                       )}
                     </div>
+                    {gap?.status === "holder" && (
+                      <div className="mt-1 text-xs font-semibold text-amber-700">
+                        🎉 This is your record!
+                      </div>
+                    )}
+                    {gap?.status === "behind" && (
+                      <div className="mt-1 text-xs text-gray-500">
+                        You're {gapLabel(a.unit, gap.gap)}
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="mt-2 text-sm italic text-gray-400">

@@ -35,3 +35,10 @@ export type Standings = {
   achievements: AchievementView[];
   totals: { distanceM: number; runners: number; activities: number };
 };
+
+/** Current-viewer identity, as returned by GET /api/me. */
+export type Me = {
+  user: { id: string; name: string; teamId: string } | null;
+  team: { id: string; name: string; character: string; colorHex: string } | null;
+  admin: boolean;
+};
