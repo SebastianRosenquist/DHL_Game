@@ -292,9 +292,12 @@ export default function Cheerleaders({
         🎉 The Thursday Stand 🎉
       </div>
 
-      {/* The stand backdrop sets the aspect ratio; characters position over it. */}
+      {/* The stand backdrop sets the aspect ratio; characters position over it.
+          `isolate` traps their per-character zIndex (up to ~100, for front/back
+          perspective) inside this stacking context so it can never render above
+          page-level overlays like the Tutorial. */}
       <div
-        className="relative mx-auto w-full max-w-2xl overflow-hidden"
+        className="relative isolate mx-auto w-full max-w-2xl overflow-hidden"
         style={{ aspectRatio: "3/2" }}
       >
         <Image

@@ -94,7 +94,7 @@ export default function JoinPage() {
                 Hey, I&apos;m {SPRITES[greeter].name}!
               </div>
               <div className="mt-1 text-sm text-gray-600">
-                Type your name to sign in — or start a new account by picking a team.
+                Type your name to sign in — or start a new account by also picking a team.
               </div>
             </div>
           </div>

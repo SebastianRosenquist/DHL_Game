@@ -20,17 +20,27 @@ type Step = {
 const STEPS: Step[] = [
   {
     sprite: "seb",
-    text: "Welcome to the Team Run Challenge! 👋 Lets show you around in just a few clicks.",
+    text: "Hi! I'm Seb - the creator of this little app 👋 Welcome to the Team Run Challenge! Robert + Staben will show you around in just a few clicks.",
   },
   {
     sprite: "robert",
     targetId: "nav-log",
-    text: "Log your runs manually, or drop in a GPX / TCX / CSV file (Strava, Garmin — whatever). Duplicates are auto-skipped.",
+    text: "Log your runs and walks manually here!",
   },
   {
     sprite: "clea",
     targetId: "race-section",
     text: "This is the race. Every team's mascot moves as your team runners log distance. Reach the goals to grab route prizes!",
+  },
+  {
+    sprite: "seb",
+    targetId: "toggle-View",
+    text: "You can toggle the views of the race here."
+  },
+  {
+    sprite: "robert",
+    targetId: "race-tracks",
+    text: "Press on a team and see the stats of each member of that team!"
   },
   {
     sprite: "filip",
@@ -40,7 +50,17 @@ const STEPS: Step[] = [
   {
     sprite: "seb",
     targetId: "achievements",
-    text: "These are the competitive records — one champion each. Beat them to steal the crown! Good luck out there. 🏁",
+    text: "These are the competitive records — one champion each. Beat them to steal the crown!",
+  },
+  {
+    sprite: "filip",
+    targetId: "my-stats",
+    text: "Once you're logged in, your personal totals show up down here — runs, walks, and your team, all in one place.",
+  },
+  {
+    sprite: "clea",
+    targetId: "login-button",
+    text: "Now let's get you logged in so you can start to race! You don't need a password, just remember your name. Good luck out there! 🏁",
   },
 ];
 

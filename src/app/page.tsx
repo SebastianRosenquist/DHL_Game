@@ -11,7 +11,7 @@ import SegmentRace from "@/components/SegmentRace";
 import Tutorial from "@/components/Tutorial";
 import type { GapInfo } from "@/lib/achievement-gaps";
 import { fetcher } from "@/lib/fetcher";
-import { formatDistance } from "@/lib/format";
+import { formatDistance, formatDuration, formatPace } from "@/lib/format";
 import type { PersonalStats } from "@/lib/personal-stats";
 import type { Me, Standings } from "@/lib/types";
 
@@ -56,7 +56,7 @@ export default function DashboardPage() {
               ★ Thursdays ★
             </div>
             <h1 className="mt-1 text-3xl font-extrabold tracking-tight">
-              DHL Team Challenge 🏁
+              DHL Challenge 🏁
             </h1>
             <p className="text-gray-500">
               Log your runs, push your team across the map, and grab the prizes.
@@ -82,7 +82,7 @@ export default function DashboardPage() {
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <h2 className="font-pixel text-sm text-ink">🏆 THE RACE</h2>
             <div className="flex items-center gap-2">
-              <div className="inline-flex rounded-md border-2 border-ink bg-white p-1 text-sm shadow-pixelSm">
+              <div id="toggle-View" className="inline-flex rounded-md border-2 border-ink bg-white p-1 text-sm shadow-pixelSm">
                 <button
                   onClick={() => setView("next")}
                   className={`rounded px-3 py-1 font-pixel text-[9px] uppercase tracking-wide transition ${
@@ -111,7 +111,7 @@ export default function DashboardPage() {
               : "Everyone on the same route — see how the teams stack up overall."}
           </p>
           {isLoading && !data ? (
-            <div className="py-10 text-center font-pixel text-[10px] text-gray-400">
+            <div id="race-tracks" className="py-10 text-center font-pixel text-[10px] text-gray-400">
               LOADING THE RACE…
             </div>
           ) : view === "next" ? (
@@ -163,13 +163,42 @@ export default function DashboardPage() {
             <p className="mb-4 text-sm text-gray-500">
               Your personal totals across every run and walk you've logged.
             </p>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               <Stat
                 label="Total distance"
                 value={formatDistance(statsData.stats.totalDistanceM)}
               />
               <Stat label="Runs" value={String(statsData.stats.runCount)} />
               <Stat label="Walks" value={String(statsData.stats.walkCount)} />
+              <Stat
+                label="Time moving"
+                value={formatDuration(statsData.stats.totalElapsedSec)}
+              />
+              <Stat label="Active days" value={String(statsData.stats.activeDays)} />
+              <Stat
+                label="Longest run"
+                value={
+                  statsData.stats.longestRunM != null
+                    ? formatDistance(statsData.stats.longestRunM)
+                    : "—"
+                }
+              />
+              <Stat
+                label="Longest walk"
+                value={
+                  statsData.stats.longestWalkM != null
+                    ? formatDistance(statsData.stats.longestWalkM)
+                    : "—"
+                }
+              />
+              <Stat
+                label="Best pace"
+                value={
+                  statsData.stats.bestPaceSecPerKm != null
+                    ? formatPace(statsData.stats.bestPaceSecPerKm)
+                    : "—"
+                }
+              />
               <Stat label="Team" value={statsData.stats.teamName ?? "—"} />
             </div>
           </section>

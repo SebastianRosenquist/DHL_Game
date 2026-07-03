@@ -65,7 +65,7 @@ export default function Nav() {
   // Tour / account content shared between the always-visible desktop bar and
   // the mobile dropdown — only the layout direction differs between the two.
   const accountContent = (stacked: boolean) => (
-    <div className={stacked ? "flex flex-col items-stretch gap-2" : "flex items-center gap-2"}>
+    <div id="login-button" className={stacked ? "flex flex-col items-stretch gap-2" : "flex items-center gap-2"}>
       <button
         onClick={openTutorial}
         className={`rounded-full border-2 border-ink bg-white px-2 py-0.5 font-pixel text-[9px] uppercase text-ink shadow-pixelSm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none ${
