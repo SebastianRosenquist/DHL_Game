@@ -65,7 +65,7 @@ export default function SegmentRace({
 
         return (
           <div key={t.id}>
-            <div className="grid grid-cols-[150px_1fr] items-center gap-3 sm:grid-cols-[220px_1fr]">
+            <div className="grid grid-cols-[minmax(104px,32%)_1fr] items-center gap-3 sm:grid-cols-[220px_1fr]">
               {/* Team info — click to expand */}
               <button
                 onClick={() => toggleTeam(t.id)}
@@ -103,7 +103,10 @@ export default function SegmentRace({
               </button>
 
               <div className="pixelated relative h-[76px] overflow-hidden rounded-md border-[3px] border-ink bg-pixel-grass shadow-pixel">
-                <motion.div
+                {/* Progress bar behind the runner — commented out because it didn't
+                    scale cleanly across screen sizes and was visually confusing
+                    versus the runner's own position. */}
+                {/* <motion.div
                   className="absolute inset-y-0 left-0 overflow-hidden"
                   initial={{ width: "0%" }}
                   animate={{ width: `${seg.progress * 100}%` }}
@@ -112,14 +115,13 @@ export default function SegmentRace({
                     background: `linear-gradient(to right, ${t.colorHex}55, ${t.colorHex}99)`,
                   }}
                 >
-                  {/* bright pulse at the leading edge */}
                   <motion.div
                     className="absolute right-0 inset-y-0 w-[6px]"
                     animate={{ opacity: [0.8, 1, 0.8] }}
                     transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
                     style={{ background: t.colorHex }}
                   />
-                </motion.div>
+                </motion.div> */}
                 <div className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 border-t-[3px] border-dashed border-white/80" />
                 <div className="absolute left-2 top-1 font-pixel text-[8px] font-medium text-ink/70">
                   {seg.fromM === 0 ? "START" : `${seg.fromM / 1000}K`}
@@ -141,7 +143,7 @@ export default function SegmentRace({
                   )}
                 </div>
                 <motion.div
-                  className="absolute bottom-1 z-10"
+                  className="absolute bottom-1 z-10 -translate-x-1/2"
                   initial={{ left: "0%" }}
                   animate={{ left: `${seg.done ? MAX_PCT : left}%` }}
                   transition={{ type: "spring", stiffness: 40, damping: 20, delay: i * 0.12 }}
@@ -166,7 +168,7 @@ export default function SegmentRace({
                   transition={{ duration: 0.22, ease: "easeInOut" }}
                   className="overflow-hidden"
                 >
-                  <div className="mt-2 ml-[162px] sm:ml-[236px] rounded-md border-[3px] border-ink bg-white/80 shadow-pixelSm">
+                  <div className="mt-2 ml-0 sm:ml-[236px] rounded-md border-[3px] border-ink bg-white/80 shadow-pixelSm">
                     {loading === t.id ? (
                       <div className="py-4 text-center font-pixel text-[9px] text-gray-400">
                         LOADING…

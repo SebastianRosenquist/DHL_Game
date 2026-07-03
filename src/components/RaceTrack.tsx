@@ -66,7 +66,7 @@ export default function RaceTrack({
   return (
     <div className="space-y-3">
       {/* milestone ruler */}
-      <div className="grid grid-cols-[130px_1fr] gap-3 sm:grid-cols-[180px_1fr]">
+      <div className="grid grid-cols-[minmax(96px,30%)_1fr] gap-3 sm:grid-cols-[180px_1fr]">
         <div className="self-end font-pixel text-[9px] uppercase tracking-wider text-gray-400">
           Route prizes →
         </div>
@@ -98,7 +98,7 @@ export default function RaceTrack({
 
         return (
           <div key={t.id}>
-            <div className="grid grid-cols-[130px_1fr] items-center gap-3 sm:grid-cols-[180px_1fr]">
+            <div className="grid grid-cols-[minmax(96px,30%)_1fr] items-center gap-3 sm:grid-cols-[180px_1fr]">
               <button
                 onClick={() => toggleTeam(t.id)}
                 className="flex items-center gap-2 overflow-hidden text-left"
@@ -152,7 +152,7 @@ export default function RaceTrack({
                   );
                 })}
                 <motion.div
-                  className="absolute bottom-1 z-10"
+                  className="absolute bottom-1 z-10 -translate-x-1/2"
                   initial={{ left: "0%" }}
                   animate={{ left: `${left}%` }}
                   transition={{ type: "spring", stiffness: 40, damping: 20, delay: i * 0.12 }}
@@ -177,7 +177,7 @@ export default function RaceTrack({
                   transition={{ duration: 0.22, ease: "easeInOut" }}
                   className="overflow-hidden"
                 >
-                  <div className="mt-2 ml-[142px] sm:ml-[192px] rounded-md border-[3px] border-ink bg-white/80 shadow-pixelSm">
+                  <div className="mt-2 ml-0 sm:ml-[192px] rounded-md border-[3px] border-ink bg-white/80 shadow-pixelSm">
                     {loading === t.id ? (
                       <div className="py-4 text-center font-pixel text-[9px] text-gray-400">
                         LOADING…

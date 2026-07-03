@@ -240,32 +240,34 @@ export default function LogPage() {
           <h2 className="mb-3 font-bold">Your recent runs</h2>
           {acts && acts.activities.length > 0 ? (
             <div className="overflow-hidden rounded-2xl border border-gray-200">
-              <table className="w-full text-sm">
-                <thead className="bg-gray-50 text-left text-gray-500">
-                  <tr>
-                    <th className="px-4 py-2 font-medium">Date</th>
-                    <th className="px-4 py-2 font-medium">Distance</th>
-                    <th className="px-4 py-2 font-medium">Time</th>
-                    <th className="px-4 py-2 font-medium">Source</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {acts.activities.map((a) => (
-                    <tr key={a.id} className="border-t border-gray-100">
-                      <td className="px-4 py-2 tabular-nums">{a.localDate}</td>
-                      <td className="px-4 py-2 tabular-nums">
-                        {formatDistance(a.distanceM)}
-                      </td>
-                      <td className="px-4 py-2 tabular-nums">
-                        {formatDuration(a.elapsedSec)}
-                      </td>
-                      <td className="px-4 py-2 uppercase text-gray-400">
-                        {a.source}
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[480px] text-sm">
+                  <thead className="bg-gray-50 text-left text-gray-500">
+                    <tr>
+                      <th className="px-4 py-2 font-medium">Date</th>
+                      <th className="px-4 py-2 font-medium">Distance</th>
+                      <th className="px-4 py-2 font-medium">Time</th>
+                      <th className="px-4 py-2 font-medium">Source</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {acts.activities.map((a) => (
+                      <tr key={a.id} className="border-t border-gray-100">
+                        <td className="px-4 py-2 tabular-nums">{a.localDate}</td>
+                        <td className="px-4 py-2 tabular-nums">
+                          {formatDistance(a.distanceM)}
+                        </td>
+                        <td className="px-4 py-2 tabular-nums">
+                          {formatDuration(a.elapsedSec)}
+                        </td>
+                        <td className="px-4 py-2 uppercase text-gray-400">
+                          {a.source}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ) : (
             <p className="text-sm text-gray-500">No runs logged yet.</p>
