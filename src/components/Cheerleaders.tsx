@@ -6,11 +6,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { type Milestone, hasReached } from "@/lib/milestones";
 import { SPRITE_KEYS, SPRITES } from "@/lib/sprites";
 import type { TeamStanding } from "@/lib/types";
-import standImg from "@/media/Cheer/ThursdayCheerStand_Cropped.png";
+import standImg from "@/media/Cheer/ThursdayCheerStand_Wider.png";
 
 // Bilingual EN/DA chant pool — the crowd shouts one of these at random intervals.
 const CHANTS = [
-  "GO GO GO!",
+  "GO GO GO THURSDAY!",
   "KOM SÅ!",
   "YEAH!",
   "AFSTED!",
@@ -47,16 +47,37 @@ const CHEER_MS = {
 const RANDOM_INTERVAL: [number, number] = [3500, 7500]; // per cheerleader
 const WAVE_INTERVAL: [number, number] = [11000, 15000]; // group
 
-// Where each of the 4 characters stands on the stand's front bleacher. Left is
-// a horizontal percentage of the container (character is centered on it), and
-// STAND_BOTTOM lifts their feet up onto the front-row surface.
-const STAND_POSITIONS: { left: string; bottom: string }[] = [
-  { left: "20%", bottom: "16%" },  // front row left
-  { left: "56%", bottom: "16%" },  // front row right
-  { left: "38%", bottom: "27%" },  // middle row center
-  { left: "73%", bottom: "33%" },  // back row right
+// Robert still cheers (arms up, bounces) but never gets a chant bubble.
+const ROBERT_INDEX = SPRITE_KEYS.indexOf("robert");
+
+// Where each of the 12 characters stands on the wider stand's bleacher rows.
+// Left is a horizontal percentage of the container (character is centered on
+// it), and bottom lifts their feet up onto that row's bench surface. Note the
+// container is wider than it is tall (aspect 3/2), so a character's `width`
+// (a % of container *width*) renders taller than that same % of container
+// *height* — a 12%-wide box is ~29% of the container's height. Rows are
+// spaced further apart than the bench lines themselves so that closer rows
+// don't fully bury the ones behind them — some overlap is fine, total
+// coverage isn't. Width shrinks slightly per row for a subtle perspective
+// effect, and each row is narrower/staggered so heads peek between shoulders.
+const STAND_POSITIONS: { left: string; bottom: string; width: string }[] = [
+  // front row — closest bench
+  { left: "20%", bottom: "24%", width: "12%" }, // seb
+  { left: "29%", bottom: "32%", width: "11%" }, // clea
+  { left: "67%", bottom: "32%", width: "10.5%" }, // filip
+  { left: "50%", bottom: "16%", width: "12%" }, // robert
+  // middle row
+  { left: "51.5%", bottom: "34%", width: "12%" }, // kirstine
+  { left: "37.5%", bottom: "38%", width: "12%" }, // kristian
+  { left: "59.5%", bottom: "24%", width: "12%" }, // lukas
+  { left: "78.5%", bottom: "23%", width: "13%" }, // mads
+  // back row — up near the rail, kept clear of the banner above it
+  { left: "26%", bottom: "43%", width: "11.6%" }, // madsL
+  { left: "42%", bottom: "24%", width: "12.5%" }, // ola
+  { left: "58%", bottom: "45%", width: "10.5%" }, // signe
+  { left: "74%", bottom: "40%", width: "12.5%" }, // steen
+  { left: "86%", bottom: "31%", width: "13.5%" }, // lasse
 ];
-const CHARACTER_WIDTH_PCT = "24%";
 
 type Chant = {
   id: number;
@@ -118,9 +139,11 @@ export default function Cheerleaders({
   }, []);
 
   /** Show one chant above cheerleader `index`. Only one chant per cheerleader
-   *  at a time — a new one replaces the current. */
+   *  at a time — a new one replaces the current. Robert is excluded — he
+   *  still cheers, just silently. */
   const showChant = useCallback(
     (index: number, text: string, isMilestone = false, ttlMs = 2200) => {
+      if (index === ROBERT_INDEX) return;
       const id = ++chantCounter;
       setChants((prev) => [
         ...prev.filter((c) => c.index !== index),
@@ -272,7 +295,7 @@ export default function Cheerleaders({
       {/* The stand backdrop sets the aspect ratio; characters position over it. */}
       <div
         className="relative mx-auto w-full max-w-2xl overflow-hidden"
-        style={{ aspectRatio: "5/4" }}
+        style={{ aspectRatio: "3/2" }}
       >
         <Image
           src={standImg}
@@ -296,8 +319,11 @@ export default function Cheerleaders({
               style={{
                 left: pos.left,
                 bottom: pos.bottom,
-                width: CHARACTER_WIDTH_PCT,
+                width: pos.width,
                 transform: "translateX(-50%)",
+                // Characters standing lower/closer on the stand (smaller
+                // `bottom`) render in front of those higher/farther back.
+                zIndex: Math.round(100 - parseFloat(pos.bottom)),
               }}
             >
               {/* Chant bubble floats above the character — absolute so a bubble
@@ -361,6 +387,10 @@ export default function Cheerleaders({
                     className={`pixelated object-contain drop-shadow-md transition-opacity duration-100 ${
                       isCheering ? "opacity-100" : "opacity-0"
                     }`}
+                    style={{
+                      transform: `scale(${sprite.cheerScale ?? 1})`,
+                      transformOrigin: "50% 100%",
+                    }}
                     sizes="80px"
                   />
                 </div>
