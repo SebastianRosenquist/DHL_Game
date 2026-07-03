@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { type Milestone, hasReached } from "@/lib/milestones";
 import { SPRITE_KEYS, SPRITES } from "@/lib/sprites";
 import type { TeamStanding } from "@/lib/types";
-import standImg from "@/media/ThursdayCheerStand_Cropped.png";
+import standImg from "@/media/Cheer/ThursdayCheerStand_Cropped.png";
 
 // Bilingual EN/DA chant pool — the crowd shouts one of these at random intervals.
 const CHANTS = [

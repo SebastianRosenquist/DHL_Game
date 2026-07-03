@@ -1,12 +1,12 @@
 import type { StaticImageData } from "next/image";
-import cleaImg from "@/media/CleaVG.png";
-import cleaCheerImg from "@/media/CleaCheer.png";
-import filipImg from "@/media/FilipVG.png";
-import filipCheerImg from "@/media/FilipCheer.png";
-import robertImg from "@/media/RobertVG.png";
-import robertCheerImg from "@/media/RobertCheer_Cropped.png";
-import sebImg from "@/media/SebVG.png";
-import sebCheerImg from "@/media/SebCheer.png";
+import cleaImg from "@/media/VG/CleaVG.png";
+import cleaCheerImg from "@/media/Cheer/CleaCheer.png";
+import filipImg from "@/media/VG/FilipVG.png";
+import filipCheerImg from "@/media/Cheer/FilipCheer.png";
+import robertImg from "@/media/VG/RobertVG.png";
+import robertCheerImg from "@/media/Cheer/RobertCheer_Cropped.png";
+import sebImg from "@/media/VG/SebVG.png";
+import sebCheerImg from "@/media/Cheer/SebCheer.png";
 
 /**
  * Pixel-art character portraits. Two frames per character — an idle pose (`src`)
