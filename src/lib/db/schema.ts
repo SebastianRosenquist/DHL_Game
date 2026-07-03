@@ -70,11 +70,14 @@ export const activities = sqliteTable(
     source: text("source").notNull(), // manual | gpx | tcx | csv
     rawFilePath: text("raw_file_path"),
     contentHash: text("content_hash").notNull(),
+    // run | walk. Walks count toward team/race totals but not running achievements.
+    activityType: text("activity_type").notNull().default("run"),
     createdAt: createdAt(),
   },
   (t) => ({
     teamIdx: index("activities_team_idx").on(t.teamId),
     dateIdx: index("activities_date_idx").on(t.localDate),
+    typeIdx: index("activities_type_idx").on(t.activityType),
     // Same activity can't be imported twice by the same user.
     userHashUnique: unique("activities_user_hash_unique").on(
       t.userId,
@@ -106,6 +109,8 @@ export const achievementDefinitions = sqliteTable("achievement_definitions", {
     .notNull()
     .default(true),
   window: text("window").notNull().default("all_time"), // all_time | challenge
+  // run | walk. Which logged-activity type this achievement is computed over.
+  activityType: text("activity_type").notNull().default("run"),
   icon: text("icon").notNull().default("🏆"),
   enabled: integer("enabled", { mode: "boolean" }).notNull().default(true),
   sort: integer("sort").notNull().default(0),

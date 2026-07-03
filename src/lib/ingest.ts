@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 import { gzipSync } from "node:zlib";
+import type { ActivityType } from "@/lib/activity-type";
 import { sqlite } from "@/lib/db/client";
 import {
   dropGlitches,
@@ -13,12 +14,18 @@ export type NormalizedActivity = {
   movingSec?: number;
   startedAt: number; // epoch ms
   source: "manual" | "gpx" | "tcx" | "csv";
+  activityType?: ActivityType;
   points?: TrackPoint[];
   rawFilePath?: string;
 };
 
 export type IngestResult =
   | { status: "created"; activityId: string }
+  | { status: "duplicate" }
+  | { status: "rejected"; reason: string };
+
+export type UpdateResult =
+  | { status: "updated" }
   | { status: "duplicate" }
   | { status: "rejected"; reason: string };
 
@@ -50,18 +57,10 @@ function validate(n: NormalizedActivity): string | null {
 }
 
 /**
- * Insert one activity for a user (manual or parsed). Computes pace + fastest
- * windows, dedups by content hash, and stores raw trackpoints separately.
- * Caller is responsible for triggering achievement reconciliation afterwards.
+ * Fields derived from raw input that both create and update need: cleaned
+ * trackpoints, pace, projected/measured fastest windows, and the dedup hash.
  */
-export function ingestActivity(
-  userId: string,
-  teamId: string,
-  raw: NormalizedActivity,
-): IngestResult {
-  const rejection = validate(raw);
-  if (rejection) return { status: "rejected", reason: rejection };
-
+function computeDerived(raw: NormalizedActivity) {
   const points = raw.points && raw.points.length > 1 ? dropGlitches(raw.points) : [];
   const km = raw.distanceM / 1000;
   const avgPace = km > 0 ? raw.elapsedSec / km : null;
@@ -82,7 +81,33 @@ export function ingestActivity(
     if (raw.distanceM >= 10000) fastest10k = Math.round(avgPace * 10);
   }
 
-  const hash = contentHash(raw.startedAt, raw.distanceM, raw.elapsedSec);
+  return {
+    points,
+    avgPace,
+    fastest1k,
+    fastest5k,
+    fastest10k,
+    hasTrack,
+    localDate: localDateOf(raw.startedAt),
+    hash: contentHash(raw.startedAt, raw.distanceM, raw.elapsedSec),
+  };
+}
+
+/**
+ * Insert one activity for a user (manual or parsed). Computes pace + fastest
+ * windows, dedups by content hash, and stores raw trackpoints separately.
+ * Caller is responsible for triggering achievement reconciliation afterwards.
+ */
+export function ingestActivity(
+  userId: string,
+  teamId: string,
+  raw: NormalizedActivity,
+): IngestResult {
+  const rejection = validate(raw);
+  if (rejection) return { status: "rejected", reason: rejection };
+
+  const d = computeDerived(raw);
+  const activityType: ActivityType = raw.activityType ?? "run";
   const activityId = randomUUID();
 
   try {
@@ -93,8 +118,8 @@ export function ingestActivity(
              (id, user_id, team_id, distance_m, elapsed_sec, moving_sec,
               started_at, local_date, avg_pace_sec_per_km, fastest_5k_sec,
               fastest_1k_sec, fastest_10k_sec, has_track, source, raw_file_path,
-              content_hash, created_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+              content_hash, activity_type, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         )
         .run(
           activityId,
@@ -104,20 +129,21 @@ export function ingestActivity(
           Math.round(raw.elapsedSec),
           raw.movingSec != null ? Math.round(raw.movingSec) : null,
           raw.startedAt,
-          localDateOf(raw.startedAt),
-          avgPace,
-          fastest5k,
-          fastest1k,
-          fastest10k,
-          hasTrack ? 1 : 0,
+          d.localDate,
+          d.avgPace,
+          d.fastest5k,
+          d.fastest1k,
+          d.fastest10k,
+          d.hasTrack ? 1 : 0,
           raw.source,
           raw.rawFilePath ?? null,
-          hash,
+          d.hash,
+          activityType,
           Date.now(),
         );
 
-      if (hasTrack) {
-        const blob = gzipSync(Buffer.from(JSON.stringify(points)));
+      if (d.hasTrack) {
+        const blob = gzipSync(Buffer.from(JSON.stringify(d.points)));
         sqlite
           .prepare(
             `INSERT INTO activity_tracks (activity_id, points_blob) VALUES (?, ?)`,
@@ -134,4 +160,66 @@ export function ingestActivity(
   }
 
   return { status: "created", activityId };
+}
+
+/**
+ * Update a previously logged manual activity in place: re-validates,
+ * recomputes derived fields (pace, fastest windows, dedup hash), and updates
+ * the row. GPX/TCX/CSV-derived activities can't be edited here since their
+ * tracks would also need reprocessing. Caller must call reconcileAll() after
+ * a successful update.
+ */
+export function updateActivity(
+  activityId: string,
+  patch: NormalizedActivity,
+): UpdateResult {
+  const existing = sqlite
+    .prepare(`SELECT source FROM activities WHERE id = ?`)
+    .get(activityId) as { source: string } | undefined;
+  if (!existing) return { status: "rejected", reason: "Activity not found." };
+  if (existing.source !== "manual") {
+    return {
+      status: "rejected",
+      reason: "Only manually logged activities can be edited.",
+    };
+  }
+
+  const rejection = validate(patch);
+  if (rejection) return { status: "rejected", reason: rejection };
+
+  const d = computeDerived(patch);
+  const activityType: ActivityType = patch.activityType ?? "run";
+
+  try {
+    sqlite
+      .prepare(
+        `UPDATE activities SET
+           distance_m = ?, elapsed_sec = ?, moving_sec = ?, started_at = ?,
+           local_date = ?, avg_pace_sec_per_km = ?, fastest_5k_sec = ?,
+           fastest_1k_sec = ?, fastest_10k_sec = ?, activity_type = ?,
+           content_hash = ?
+         WHERE id = ?`,
+      )
+      .run(
+        Math.round(patch.distanceM),
+        Math.round(patch.elapsedSec),
+        patch.movingSec != null ? Math.round(patch.movingSec) : null,
+        patch.startedAt,
+        d.localDate,
+        d.avgPace,
+        d.fastest5k,
+        d.fastest1k,
+        d.fastest10k,
+        activityType,
+        d.hash,
+        activityId,
+      );
+  } catch (err) {
+    if (err instanceof Error && /UNIQUE/i.test(err.message)) {
+      return { status: "duplicate" };
+    }
+    throw err;
+  }
+
+  return { status: "updated" };
 }

@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       { status: 400 },
     );
   }
-  const { distanceKm, hours, minutes, seconds, date } = parsed.data;
+  const { distanceKm, hours, minutes, seconds, date, activityType } = parsed.data;
   const elapsedSec = hours * 3600 + minutes * 60 + seconds;
   if (elapsedSec <= 0) {
     return NextResponse.json({ error: "Enter a duration." }, { status: 400 });
@@ -50,6 +50,7 @@ export async function POST(req: Request) {
     elapsedSec,
     startedAt,
     source: "manual",
+    activityType,
   });
 
   if (result.status === "rejected") {

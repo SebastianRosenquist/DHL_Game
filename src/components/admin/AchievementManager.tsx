@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import useSWR, { mutate } from "swr";
+import { ACTIVITY_TYPES } from "@/lib/activity-type";
 import {
   METRICS,
   METRIC_KEYS,
@@ -17,9 +18,15 @@ type Def = {
   strategy: string;
   metric: string | null;
   scope: string;
+  activityType: string;
   icon: string;
   enabled: boolean;
   sort: number;
+};
+
+const ACTIVITY_TYPE_LABELS: Record<string, string> = {
+  run: "Run",
+  walk: "Walk",
 };
 
 const STRATEGY_LABELS: Record<string, string> = {
@@ -35,6 +42,7 @@ const blank = {
   strategy: "max_metric",
   metric: "distanceM",
   scope: "individual",
+  activityType: "run",
   icon: "🏆",
   enabled: true,
   sort: 0,
@@ -65,6 +73,7 @@ export default function AchievementManager() {
       strategy: form.strategy,
       metric: needsMetric ? form.metric : undefined,
       scope: form.scope,
+      activityType: form.activityType,
       icon: form.icon,
       enabled: form.enabled,
       sort: Number(form.sort) || 0,
@@ -134,6 +143,7 @@ export default function AchievementManager() {
                 {STRATEGY_LABELS[d.strategy] ?? d.strategy}
                 {d.metric ? ` · ${METRICS[d.metric as keyof typeof METRICS]?.label ?? d.metric}` : ""}
                 {` · ${d.scope}`}
+                {` · ${ACTIVITY_TYPE_LABELS[d.activityType] ?? d.activityType}`}
               </div>
             </div>
             <button
@@ -145,6 +155,7 @@ export default function AchievementManager() {
                   strategy: d.strategy,
                   metric: d.metric ?? "distanceM",
                   scope: d.scope,
+                  activityType: d.activityType,
                   icon: d.icon,
                   enabled: d.enabled,
                   sort: d.sort,
@@ -197,7 +208,7 @@ export default function AchievementManager() {
           maxLength={280}
         />
 
-        <div className="mt-2 grid grid-cols-2 gap-2">
+        <div className="mt-2 grid grid-cols-3 gap-2">
           <label className="text-xs font-medium text-gray-500">
             Rule
             <select
@@ -223,6 +234,21 @@ export default function AchievementManager() {
               {SCOPES.map((s) => (
                 <option key={s} value={s}>
                   {s === "team" ? "Team" : "Individual"}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="text-xs font-medium text-gray-500">
+            Activity type
+            <select
+              value={form.activityType}
+              onChange={(e) => setForm({ ...form, activityType: e.target.value })}
+              className="mt-1 w-full rounded-lg border border-gray-300 px-2 py-2 text-sm"
+            >
+              {ACTIVITY_TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {ACTIVITY_TYPE_LABELS[t]}
                 </option>
               ))}
             </select>

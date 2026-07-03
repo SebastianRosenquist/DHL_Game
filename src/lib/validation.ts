@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ACTIVITY_TYPES } from "@/lib/activity-type";
 import { CHARACTER_KEYS } from "./characters";
 
 const hexColor = z
@@ -46,5 +47,11 @@ export const manualActivityInput = z.object({
   minutes: z.coerce.number().int().min(0).max(59).default(0),
   seconds: z.coerce.number().int().min(0).max(59).default(0),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Pick a date"),
+  activityType: z.enum(ACTIVITY_TYPES).default("run"),
 });
 export type ManualActivityInput = z.infer<typeof manualActivityInput>;
+
+/** A logged-in user changing their own team. */
+export const selfTeamChangeInput = z.object({
+  teamId: z.string().min(1),
+});

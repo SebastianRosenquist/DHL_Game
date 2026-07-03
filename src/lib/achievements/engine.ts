@@ -2,13 +2,14 @@ import { randomUUID } from "node:crypto";
 import { sqlite } from "@/lib/db/client";
 import { METRICS, type AchievementParams, type MetricKey } from "./types";
 
-type DefRow = {
+export type DefRow = {
   id: string;
   strategy: string;
   params: string;
   scope: string;
   is_record_holder: number;
   enabled: number;
+  activity_type: string;
 };
 
 type Candidate = {
@@ -38,10 +39,12 @@ function computeCandidate(def: DefRow): Candidate {
         `SELECT ${groupCol} AS gid,
                 ${scope === "team" ? "NULL" : "team_id"} AS team_id,
                 COUNT(DISTINCT local_date) AS v
-         FROM activities GROUP BY ${groupCol}
+         FROM activities WHERE activity_type = ? GROUP BY ${groupCol}
          ORDER BY v DESC LIMIT 1`,
       )
-      .get() as { gid: string; team_id: string | null; v: number } | undefined;
+      .get(def.activity_type) as
+      | { gid: string; team_id: string | null; v: number }
+      | undefined;
     if (!row || row.v <= 0) return null;
     return scope === "team"
       ? { value: row.v, userId: null, teamId: row.gid, sourceActivityId: null }
@@ -60,20 +63,22 @@ function computeCandidate(def: DefRow): Candidate {
       const row = sqlite
         .prepare(
           `SELECT team_id, SUM(distance_m) AS v
-           FROM activities GROUP BY team_id, local_date
+           FROM activities WHERE activity_type = ? GROUP BY team_id, local_date
            ORDER BY v ${dir} LIMIT 1`,
         )
-        .get() as { team_id: string; v: number } | undefined;
+        .get(def.activity_type) as { team_id: string; v: number } | undefined;
       if (!row) return null;
       return { value: row.v, userId: null, teamId: row.team_id, sourceActivityId: null };
     }
     const row = sqlite
       .prepare(
         `SELECT user_id, team_id, SUM(distance_m) AS v
-         FROM activities GROUP BY user_id, local_date
+         FROM activities WHERE activity_type = ? GROUP BY user_id, local_date
          ORDER BY v ${dir} LIMIT 1`,
       )
-      .get() as { user_id: string; team_id: string; v: number } | undefined;
+      .get(def.activity_type) as
+      | { user_id: string; team_id: string; v: number }
+      | undefined;
     if (!row) return null;
     return {
       value: row.v,
@@ -94,10 +99,12 @@ function computeCandidate(def: DefRow): Candidate {
         `SELECT ${groupCol} AS gid,
                 ${scope === "team" ? "NULL" : "team_id"} AS team_id,
                 SUM(${col}) AS v
-         FROM activities WHERE ${col} IS NOT NULL
+         FROM activities WHERE ${col} IS NOT NULL AND activity_type = ?
          GROUP BY ${groupCol} ORDER BY v DESC LIMIT 1`,
       )
-      .get() as { gid: string; team_id: string | null; v: number } | undefined;
+      .get(def.activity_type) as
+      | { gid: string; team_id: string | null; v: number }
+      | undefined;
     if (!row || row.v == null) return null;
     return scope === "team"
       ? { value: row.v, userId: null, teamId: row.gid, sourceActivityId: null }
@@ -114,10 +121,10 @@ function computeCandidate(def: DefRow): Candidate {
   const row = sqlite
     .prepare(
       `SELECT id, user_id, team_id, ${col} AS v
-       FROM activities WHERE ${col} IS NOT NULL
+       FROM activities WHERE ${col} IS NOT NULL AND activity_type = ?
        ORDER BY v ${dir} LIMIT 1`,
     )
-    .get() as
+    .get(def.activity_type) as
     | { id: string; user_id: string; team_id: string; v: number }
     | undefined;
   if (!row) return null;
@@ -127,6 +134,68 @@ function computeCandidate(def: DefRow): Candidate {
     teamId: row.team_id,
     sourceActivityId: row.id,
   };
+}
+
+/**
+ * Same per-strategy shape as computeCandidate, but scoped to one user/team
+ * instead of taking the global best. Used to show "how far are you from the
+ * leader" without duplicating the strategy logic.
+ */
+export function computeOwnValue(
+  def: DefRow,
+  who: { userId: string; teamId: string },
+): number | null {
+  const params = JSON.parse(def.params || "{}") as AchievementParams;
+  const metric = params.metric;
+  const scope = def.scope === "team" ? "team" : "individual";
+  const ownerCol = scope === "team" ? "team_id" : "user_id";
+  const ownerId = scope === "team" ? who.teamId : who.userId;
+
+  if (def.strategy === "count_distinct_days") {
+    const row = sqlite
+      .prepare(
+        `SELECT COUNT(DISTINCT local_date) AS v FROM activities
+         WHERE activity_type = ? AND ${ownerCol} = ?`,
+      )
+      .get(def.activity_type, ownerId) as { v: number } | undefined;
+    return row && row.v > 0 ? row.v : null;
+  }
+
+  if (metric === "dayDistanceM") {
+    const dir = def.strategy === "min_metric" ? "ASC" : "DESC";
+    const row = sqlite
+      .prepare(
+        `SELECT SUM(distance_m) AS v FROM activities
+         WHERE activity_type = ? AND ${ownerCol} = ?
+         GROUP BY local_date ORDER BY v ${dir} LIMIT 1`,
+      )
+      .get(def.activity_type, ownerId) as { v: number } | undefined;
+    return row ? row.v : null;
+  }
+
+  const col = columnFor(metric);
+  if (!col) return null;
+
+  if (def.strategy === "sum_metric") {
+    const row = sqlite
+      .prepare(
+        `SELECT SUM(${col}) AS v FROM activities
+         WHERE ${col} IS NOT NULL AND activity_type = ? AND ${ownerCol} = ?`,
+      )
+      .get(def.activity_type, ownerId) as { v: number | null } | undefined;
+    return row?.v ?? null;
+  }
+
+  // min/max of a per-activity column: best single activity by this owner.
+  const dir = def.strategy === "min_metric" ? "ASC" : "DESC";
+  const fn = dir === "ASC" ? "MIN" : "MAX";
+  const row = sqlite
+    .prepare(
+      `SELECT ${fn}(${col}) AS v FROM activities
+       WHERE ${col} IS NOT NULL AND activity_type = ? AND ${ownerCol} = ?`,
+    )
+    .get(def.activity_type, ownerId) as { v: number | null } | undefined;
+  return row?.v ?? null;
 }
 
 /**

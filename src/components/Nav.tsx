@@ -72,7 +72,7 @@ export default function Nav() {
 
         <nav className="flex items-center gap-1">
           {link("/", "Dashboard")}
-          {link("/log", "Log a run", "nav-log")}
+          {link("/log", "Log activity", "nav-log")}
           {link("/admin", "Admin")}
         </nav>
 

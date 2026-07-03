@@ -22,6 +22,13 @@
       "when": 1782888115899,
       "tag": "0002_lame_ultimates",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1783075541981,
+      "tag": "0003_wakeful_harpoon",
+      "breakpoints": true
     }
   ]
 }

@@ -9,9 +9,11 @@ import RaceTrack from "@/components/RaceTrack";
 import RoutePrizes from "@/components/RoutePrizes";
 import SegmentRace from "@/components/SegmentRace";
 import Tutorial from "@/components/Tutorial";
+import type { GapInfo } from "@/lib/achievement-gaps";
 import { fetcher } from "@/lib/fetcher";
 import { formatDistance } from "@/lib/format";
-import type { Standings } from "@/lib/types";
+import type { PersonalStats } from "@/lib/personal-stats";
+import type { Me, Standings } from "@/lib/types";
 
 type RaceView = "next" | "full";
 
@@ -34,6 +36,15 @@ export default function DashboardPage() {
   const { data, isLoading } = useSWR<Standings>("/api/standings", fetcher, {
     refreshInterval: 5000,
   });
+  const { data: me } = useSWR<Me>("/api/me", fetcher);
+  const { data: gapsData } = useSWR<{ gaps: Record<string, GapInfo> }>(
+    me?.user ? "/api/me/achievement-gaps" : null,
+    fetcher,
+  );
+  const { data: statsData } = useSWR<{ stats: PersonalStats | null }>(
+    me?.user ? "/api/me/stats" : null,
+    fetcher,
+  );
 
   return (
     <>
@@ -140,8 +151,29 @@ export default function DashboardPage() {
           <p className="mb-4 text-sm text-gray-500">
             Competitive records — one current holder each.
           </p>
-          <AchievementBadges achievements={data?.achievements ?? []} />
+          <AchievementBadges
+            achievements={data?.achievements ?? []}
+            gaps={gapsData?.gaps}
+          />
         </section>
+
+        {me?.user && statsData?.stats && (
+          <section id="my-stats" className="mt-8">
+            <h2 className="mb-1 font-pixel text-sm text-ink">🏃 YOUR STATS</h2>
+            <p className="mb-4 text-sm text-gray-500">
+              Your personal totals across every run and walk you've logged.
+            </p>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <Stat
+                label="Total distance"
+                value={formatDistance(statsData.stats.totalDistanceM)}
+              />
+              <Stat label="Runs" value={String(statsData.stats.runCount)} />
+              <Stat label="Walks" value={String(statsData.stats.walkCount)} />
+              <Stat label="Team" value={statsData.stats.teamName ?? "—"} />
+            </div>
+          </section>
+        )}
       </main>
 
       <Tutorial />
