@@ -41,6 +41,9 @@ export default function RoutePrizes({
                     {m.km} km
                   </span>
                 </div>
+                {m.subtitle && (
+                  <p className="mt-0.5 text-xs text-gray-500">{m.subtitle}</p>
+                )}
 
                 {reached.length > 0 ? (
                   <div className="mt-1.5 flex flex-wrap gap-1.5">

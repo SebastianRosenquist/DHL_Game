@@ -12,7 +12,8 @@ export async function GET(
   const members = sqlite
     .prepare(
       `SELECT u.id, u.name,
-              COUNT(a.id)                        AS runs,
+              SUM(CASE WHEN a.activity_type = 'run' THEN 1 ELSE 0 END)  AS runs,
+              SUM(CASE WHEN a.activity_type = 'walk' THEN 1 ELSE 0 END) AS walks,
               COALESCE(SUM(a.distance_m), 0)     AS totalM,
               MIN(a.fastest_5k_sec)              AS best5kSec,
               MIN(a.fastest_1k_sec)              AS best1kSec,

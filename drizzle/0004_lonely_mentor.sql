@@ -1,0 +1,1 @@
+ALTER TABLE `milestones` ADD `subtitle` text DEFAULT '' NOT NULL;

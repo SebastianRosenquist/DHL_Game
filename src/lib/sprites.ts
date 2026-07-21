@@ -25,6 +25,14 @@ import steenImg from "@/media/VG/SteenVG.png";
 import steenCheerImg from "@/media/Cheer/SteenCheer.png";
 import lasseImg from "@/media/VG/LasseVG.png";
 import lasseCheerImg from "@/media/Cheer/LasseCheer.png";
+import ebbeImg from "@/media/VG/EbbeVG.png";
+import ebbeCheerImg from "@/media/Cheer/EbbeCheer.png";
+import emilieImg from "@/media/VG/EmilieVG.png";
+import emilieCheerImg from "@/media/Cheer/EmilieCheer.png";
+import frandsenImg from "@/media/VG/FrandsenVG.png";
+import frandsenCheerImg from "@/media/Cheer/FrandsenCheer.png";
+import izabelaImg from "@/media/VG/IzabelaVG.png";
+import izabelaCheerImg from "@/media/Cheer/IzabelaCheer.png";
 
 type SpriteEntry = {
   name: string;
@@ -52,6 +60,10 @@ export const SPRITE_KEYS = [
   "signe",
   "steen",
   "lasse",
+  "ebbe",
+  "emilie",
+  "frandsen",
+  "izabela",
 ] as const;
 export type SpriteKey = (typeof SPRITE_KEYS)[number];
 
@@ -129,5 +141,25 @@ export const SPRITES: Record<SpriteKey, SpriteEntry> = {
     name: "Lasse",
     src: lasseImg as StaticImageData,
     cheerSrc: lasseCheerImg as StaticImageData,
+  },
+  ebbe: {
+    name: "Ebbe",
+    src: ebbeImg as StaticImageData,
+    cheerSrc: ebbeCheerImg as StaticImageData,
+  },
+  emilie: {
+    name: "Emilie",
+    src: emilieImg as StaticImageData,
+    cheerSrc: emilieCheerImg as StaticImageData,
+  },
+  frandsen: {
+    name: "Frandsen",
+    src: frandsenImg as StaticImageData,
+    cheerSrc: frandsenCheerImg as StaticImageData,
+  },
+  izabela: {
+    name: "Izabela",
+    src: izabelaImg as StaticImageData,
+    cheerSrc: izabelaCheerImg as StaticImageData,
   },
 };

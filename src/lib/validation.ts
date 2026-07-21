@@ -6,6 +6,14 @@ const hexColor = z
   .string()
   .regex(/^#[0-9a-fA-F]{6}$/, "Must be a hex color like #FFCC00");
 
+// Danish keyboards commonly type "," for the decimal separator; accept it
+// alongside "." before coercing to a number.
+const decimalNumber = () =>
+  z.preprocess(
+    (v) => (typeof v === "string" ? v.replace(",", ".") : v),
+    z.coerce.number(),
+  );
+
 export const teamInput = z.object({
   name: z.string().trim().min(1, "Name required").max(40),
   character: z.enum(CHARACTER_KEYS),
@@ -21,8 +29,9 @@ export const joinInput = z.object({
 
 /** Admin creating/editing a route milestone (prize). */
 export const milestoneInput = z.object({
-  km: z.coerce.number().positive("Distance must be > 0").max(100000),
+  km: decimalNumber().pipe(z.number().positive("Distance must be > 0").max(100000)),
   label: z.string().trim().min(1, "Name required").max(40),
+  subtitle: z.string().trim().max(80).default(""),
   icon: z.string().trim().min(1).max(8).default("🏁"),
 });
 export type MilestoneInput = z.infer<typeof milestoneInput>;
@@ -42,7 +51,7 @@ export const userEditInput = z
  * form; we normalize to meters + seconds before storing.
  */
 export const manualActivityInput = z.object({
-  distanceKm: z.coerce.number().positive("Distance must be > 0").max(500),
+  distanceKm: decimalNumber().pipe(z.number().positive("Distance must be > 0").max(500)),
   hours: z.coerce.number().int().min(0).max(48).default(0),
   minutes: z.coerce.number().int().min(0).max(59).default(0),
   seconds: z.coerce.number().int().min(0).max(59).default(0),
