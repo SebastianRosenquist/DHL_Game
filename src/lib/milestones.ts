@@ -10,15 +10,16 @@ export type Milestone = {
   id?: string;
   km: number;
   label: string;
+  subtitle?: string;
   icon: string;
 };
 
 export const DEFAULT_MILESTONES: Omit<Milestone, "id">[] = [
-  { km: 20, label: "Bronze Boot", icon: "🥾" },
-  { km: 40, label: "Silver Stride", icon: "🥈" },
-  { km: 60, label: "Gold Gallop", icon: "🥇" },
-  { km: 80, label: "Diamond Dash", icon: "💎" },
-  { km: 100, label: "Centurion Cup", icon: "🏆" },
+  { km: 20, label: "Bronze Boot", subtitle: "", icon: "🥾" },
+  { km: 40, label: "Silver Stride", subtitle: "", icon: "🥈" },
+  { km: 60, label: "Gold Gallop", subtitle: "", icon: "🥇" },
+  { km: 80, label: "Diamond Dash", subtitle: "", icon: "💎" },
+  { km: 100, label: "Centurion Cup", subtitle: "", icon: "🏆" },
 ];
 
 /** Milestones sorted by distance (ascending). */

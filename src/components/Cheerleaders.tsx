@@ -64,7 +64,7 @@ const STAND_POSITIONS: { left: string; bottom: string; width: string }[] = [
   // front row — closest bench
   { left: "20%", bottom: "24%", width: "12%" }, // seb
   { left: "29%", bottom: "32%", width: "11%" }, // clea
-  { left: "67%", bottom: "32%", width: "10.5%" }, // filip
+  { left: "69%", bottom: "32%", width: "10.5%" }, // filip
   { left: "50%", bottom: "16%", width: "12%" }, // robert
   // middle row
   { left: "51.5%", bottom: "34%", width: "12%" }, // kirstine
@@ -75,8 +75,13 @@ const STAND_POSITIONS: { left: string; bottom: string; width: string }[] = [
   { left: "26%", bottom: "43%", width: "11.6%" }, // madsL
   { left: "42%", bottom: "24%", width: "12.5%" }, // ola
   { left: "58%", bottom: "45%", width: "10.5%" }, // signe
-  { left: "74%", bottom: "40%", width: "12.5%" }, // steen
+  { left: "74%", bottom: "40%", width: "12%" }, // steen
   { left: "86%", bottom: "31%", width: "13.5%" }, // lasse
+  // extra row — new additions, tucked in the remaining gaps
+  { left: "13%", bottom: "30%", width: "13%" }, // ebbe
+  { left: "45%", bottom: "38%", width: "13%" }, // emilie
+  { left: "17%", bottom: "40%", width: "14%" }, // frandsen
+  { left: "65%", bottom: "37%", width: "14%" }, // izabela
 ];
 
 type Chant = {

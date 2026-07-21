@@ -4,9 +4,15 @@ import { useState } from "react";
 import useSWR, { mutate } from "swr";
 import { apiSend, fetcher } from "@/lib/fetcher";
 
-type Milestone = { id: string; km: number; label: string; icon: string };
+type Milestone = {
+  id: string;
+  km: number;
+  label: string;
+  subtitle: string;
+  icon: string;
+};
 
-const blank = { km: "", label: "", icon: "🏁" };
+const blank = { km: "", label: "", subtitle: "", icon: "🏁" };
 type FormState = typeof blank;
 
 export default function MilestoneManager() {
@@ -26,7 +32,12 @@ export default function MilestoneManager() {
 
   async function save() {
     setError(null);
-    const payload = { km: form.km, label: form.label, icon: form.icon || "🏁" };
+    const payload = {
+      km: form.km,
+      label: form.label,
+      subtitle: form.subtitle,
+      icon: form.icon || "🏁",
+    };
     try {
       if (editingId) {
         await apiSend(`/api/milestones/${editingId}`, "PATCH", payload);
@@ -67,11 +78,21 @@ export default function MilestoneManager() {
           >
             <span className="text-xl">{m.icon}</span>
             <span className="w-16 font-semibold tabular-nums">{m.km} km</span>
-            <span className="flex-1 text-gray-600">{m.label}</span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-gray-600">{m.label}</span>
+              {m.subtitle && (
+                <span className="block text-xs text-gray-400">{m.subtitle}</span>
+              )}
+            </span>
             <button
               onClick={() => {
                 setEditingId(m.id);
-                setForm({ km: String(m.km), label: m.label, icon: m.icon });
+                setForm({
+                  km: String(m.km),
+                  label: m.label,
+                  subtitle: m.subtitle ?? "",
+                  icon: m.icon,
+                });
               }}
               className="text-sm text-gray-500 hover:text-ink"
             >
@@ -118,6 +139,15 @@ export default function MilestoneManager() {
             placeholder="Prize name, e.g. Bronze Boot"
             className="flex-1 rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-ink"
             maxLength={40}
+          />
+        </div>
+        <div className="mt-2">
+          <input
+            value={form.subtitle}
+            onChange={(e) => setForm({ ...form, subtitle: e.target.value })}
+            placeholder="Optional subtitle, e.g. prize description"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-ink"
+            maxLength={80}
           />
         </div>
 

@@ -102,8 +102,14 @@ export function getStandings(): Standings {
   ).c;
 
   const milestones = sqlite
-    .prepare(`SELECT id, km, label, icon FROM milestones ORDER BY km`)
-    .all() as { id: string; km: number; label: string; icon: string }[];
+    .prepare(`SELECT id, km, label, subtitle, icon FROM milestones ORDER BY km`)
+    .all() as {
+    id: string;
+    km: number;
+    label: string;
+    subtitle: string;
+    icon: string;
+  }[];
 
   return {
     teams,

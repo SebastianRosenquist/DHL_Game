@@ -160,6 +160,7 @@ export const milestones = sqliteTable("milestones", {
   id: id(),
   km: real("km").notNull(),
   label: text("label").notNull(),
+  subtitle: text("subtitle").notNull().default(""),
   icon: text("icon").notNull().default("🏁"),
   createdAt: createdAt(),
 });

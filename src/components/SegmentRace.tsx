@@ -14,6 +14,7 @@ type Member = {
   id: string;
   name: string;
   runs: number;
+  walks: number;
   totalM: number;
   best5kSec: number | null;
   best1kSec: number | null;
@@ -184,6 +185,7 @@ export default function SegmentRace({
                             <th className="px-3 py-2 text-left">Runner</th>
                             <th className="px-3 py-2 text-right">Distance</th>
                             <th className="px-3 py-2 text-right">Runs</th>
+                            <th className="px-3 py-2 text-right">Walks</th>
                             <th className="hidden px-3 py-2 text-right sm:table-cell">Best 5K</th>
                             <th className="hidden px-3 py-2 text-right sm:table-cell">Best pace</th>
                           </tr>
@@ -202,6 +204,9 @@ export default function SegmentRace({
                               </td>
                               <td className="px-3 py-2 text-right tabular-nums text-gray-500">
                                 {m.runs}
+                              </td>
+                              <td className="px-3 py-2 text-right tabular-nums text-gray-500">
+                                {m.walks}
                               </td>
                               <td className="hidden px-3 py-2 text-right tabular-nums sm:table-cell">
                                 {m.best5kSec ? formatDuration(m.best5kSec) : <span className="text-gray-300">—</span>}
