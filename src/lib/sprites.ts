@@ -33,6 +33,8 @@ import frandsenImg from "@/media/VG/FrandsenVG.png";
 import frandsenCheerImg from "@/media/Cheer/FrandsenCheer.png";
 import izabelaImg from "@/media/VG/IzabelaVG.png";
 import izabelaCheerImg from "@/media/Cheer/IzabelaCheer.png";
+import danielImg from "@/media/VG/DanielVG.png";
+import danielCheerImg from "@/media/Cheer/DanielCheer.png";
 
 type SpriteEntry = {
   name: string;
@@ -64,6 +66,7 @@ export const SPRITE_KEYS = [
   "emilie",
   "frandsen",
   "izabela",
+  "daniel",
 ] as const;
 export type SpriteKey = (typeof SPRITE_KEYS)[number];
 
@@ -161,5 +164,10 @@ export const SPRITES: Record<SpriteKey, SpriteEntry> = {
     name: "Izabela",
     src: izabelaImg as StaticImageData,
     cheerSrc: izabelaCheerImg as StaticImageData,
+  },
+  daniel: {
+    name: "Daniel",
+    src: danielImg as StaticImageData,
+    cheerSrc: danielCheerImg as StaticImageData,
   },
 };
