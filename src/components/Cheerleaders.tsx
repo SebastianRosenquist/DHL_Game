@@ -82,6 +82,7 @@ const STAND_POSITIONS: { left: string; bottom: string; width: string }[] = [
   { left: "45%", bottom: "38%", width: "13%" }, // emilie
   { left: "17%", bottom: "40%", width: "14%" }, // frandsen
   { left: "65%", bottom: "37%", width: "14%" }, // izabela
+  { left: "92%", bottom: "35%", width: "12%" }, // daniel
 ];
 
 type Chant = {
